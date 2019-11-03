@@ -11,7 +11,7 @@ ONBUILD ARG xdebug
 ONBUILD ARG zip
 
 ONBUILD RUN \
-    && if [ "$bcmath" != "false" ]; then \
+    if [ "$bcmath" != "false" ]; then \
         export EXT_INSTALL="${EXT_INSTALL} bcmath" \
     ; fi \
     && if [ "$exif" = "true" ]; then \
