@@ -53,7 +53,7 @@ ONBUILD RUN \
     ; fi \
     && set -x \
     && apk add --virtual .build-deps $BUILD_DEPS $PHPIZE_DEPS \
-    && apk add fcgi nginx s6 \
+    && apk add $DEPS fcgi nginx s6 \
     && if [ "$gd" = "true" ]; then \
         docker-php-ext-configure gd \
             --with-gd \
