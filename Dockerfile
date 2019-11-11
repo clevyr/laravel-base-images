@@ -26,12 +26,14 @@ ONBUILD RUN \
     && if [ "$imagick" = "true" ]; then \
         export BUILD_DEPS="${BUILD_DEPS} imagemagick-dev" \
         && export DEPS="${DEPS} imagemagick" \
+        && PECLS="${PECLS} imagick" \
+        && EXT_ENABLE="${EXT_ENABLE} imagick" \
     ; fi \
     && if [ "$mosquitto" = "true" ]; then \
         export BUILD_DEPS="${BUILD_DEPS} mosquitto-dev" \
         && export DEPS="${DEPS} mosquitto-libs" \
         && export PECLS="${PECLS} Mosquitto-alpha" \
-        && export EXT_ENABLE="${ENABLE} mosquitto" \
+        && export EXT_ENABLE="${EXT_ENABLE} mosquitto" \
     ; fi \
     && if [ "$pgsql" != "false" ]; then \
         export EXT_INSTALL="${EXT_INSTALL} pgsql pdo_pgsql" \
