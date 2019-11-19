@@ -9,6 +9,7 @@ These are a set of images with the needed dependencies installed without having 
 | gd        | true    |
 | imagick   | false   |
 | mosquitto | false   |
+| mysql     | false   |
 | pgsql     | true    |
 | redis     | false   |
 | xdebug    | false   |

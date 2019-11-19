@@ -5,6 +5,7 @@ ONBUILD ARG exif
 ONBUILD ARG gd
 ONBUILD ARG imagick
 ONBUILD ARG mosquitto
+ONBUILD ARG mysql
 ONBUILD ARG pgsql
 ONBUILD ARG redis
 ONBUILD ARG xdebug
@@ -34,6 +35,9 @@ ONBUILD RUN \
         && export DEPS="${DEPS} mosquitto-libs" \
         && export PECLS="${PECLS} Mosquitto-alpha" \
         && export EXT_ENABLE="${EXT_ENABLE} mosquitto" \
+    ; fi \
+    && if [ "$mysql" != "false" ]; then \
+        export EXT_INSTALL="${EXT_INSTALL} mysqli pdo_mysql" \
     ; fi \
     && if [ "$pgsql" != "false" ]; then \
         export EXT_INSTALL="${EXT_INSTALL} pgsql pdo_pgsql" \
