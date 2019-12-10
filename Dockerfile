@@ -72,7 +72,7 @@ ONBUILD RUN \
             --with-webp-dir=/usr/include/ \
     ; fi \
     && if [ "$INSTALL_ZIP" = "true" ]; then \
-        docker-php-ext-configure zip --with-libzip \
+        docker-php-ext-configure zip \
     ; fi \
     && if [ -n "$EXT_INSTALL" ]; then \
         docker-php-ext-install -j"$(nproc)" $EXT_INSTALL \
