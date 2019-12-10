@@ -1,5 +1,7 @@
 FROM php:7.4-fpm-alpine
 
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+
 ONBUILD ARG INSTALL_BCMATH
 ONBUILD ARG INSTALL_EXIF
 ONBUILD ARG INSTALL_GD
