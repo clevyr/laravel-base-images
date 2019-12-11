@@ -65,11 +65,6 @@ ONBUILD RUN \
     && apk add $DEPS fcgi nginx s6 \
     && if [ "$INSTALL_GD" = "true" ]; then \
         docker-php-ext-configure gd \
-            --with-gd \
-            --with-freetype-dir=/usr/include/ \
-            --with-png-dir=/usr/include/ \
-            --with-jpeg-dir=/usr/include/ \
-            --with-webp-dir=/usr/include/ \
     ; fi \
     && if [ "$INSTALL_ZIP" = "true" ]; then \
         docker-php-ext-configure zip \
