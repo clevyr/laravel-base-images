@@ -63,6 +63,7 @@ ONBUILD RUN \
     && set -x \
     && apk add --virtual .build-deps $BUILD_DEPS $PHPIZE_DEPS \
     && apk add $DEPS fcgi nginx s6 \
+    && docker-php-source extract \
     && if [ "$INSTALL_GD" = "true" ]; then \
         docker-php-ext-configure gd \
             --with-gd \
@@ -83,6 +84,7 @@ ONBUILD RUN \
     && if [ -n "$EXT_ENABLE" ]; then \
         docker-php-ext-enable $EXT_ENABLE \
     ; fi \
+    && docker-php-source delete \
     && apk del .build-deps \
     && rm -rf /tmp/* /var/cache/apk/* \
     && cd "$PHP_INI_DIR" \
