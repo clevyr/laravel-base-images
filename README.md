@@ -10,6 +10,7 @@ These are a set of images with the needed dependencies installed without having 
 | Build Arg         | Default |
 |-------------------|---------|
 | INSTALL_BCMATH    | true    |
+| INSTALL_CALENDAR  | false   |
 | INSTALL_EXIF      | false   |
 | INSTALL_GD        | true    |
 | INSTALL_IMAGICK   | false   |

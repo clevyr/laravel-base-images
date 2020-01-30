@@ -3,6 +3,7 @@ FROM php:7.4-fpm-alpine
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 ONBUILD ARG INSTALL_BCMATH
+ONBUILD ARG INSTALL_CALENDAR
 ONBUILD ARG INSTALL_EXIF
 ONBUILD ARG INSTALL_GD
 ONBUILD ARG INSTALL_IMAGICK
@@ -17,6 +18,9 @@ ONBUILD ARG DEPS
 ONBUILD RUN \
     if [ "$INSTALL_BCMATH" != "false" ]; then \
         export EXT_INSTALL="${EXT_INSTALL} bcmath" \
+    ; fi \
+    && if [ "$INSTALL_CALENDAR" = "true" ]; then \
+        export EXT_INSTALL="${EXT_INSTALL} calendar" \
     ; fi \
     && if [ "$INSTALL_EXIF" = "true" ]; then \
         export DEPS="${DEPS} exiftool" \
