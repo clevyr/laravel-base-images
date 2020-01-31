@@ -1,5 +1,8 @@
 FROM php:7.4-fpm-alpine
 
+WORKDIR /app
+VOLUME /app
+
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 ONBUILD ARG INSTALL_BCMATH
