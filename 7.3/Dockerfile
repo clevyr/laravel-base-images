@@ -1,5 +1,7 @@
 FROM php:7.3-fpm-alpine
 
+ENV LC_ALL=C
+
 WORKDIR /app
 VOLUME /app
 
@@ -14,6 +16,7 @@ ONBUILD ARG INSTALL_MOSQUITTO
 ONBUILD ARG INSTALL_MYSQL
 ONBUILD ARG INSTALL_PGSQL
 ONBUILD ARG INSTALL_REDIS
+ONBUILD ARG INSTALL_SQLSRV
 ONBUILD ARG INSTALL_XDEBUG
 ONBUILD ARG INSTALL_ZIP
 ONBUILD ARG DEPS
@@ -58,6 +61,11 @@ ONBUILD RUN \
         export PECLS="${PECLS} redis" \
         && export EXT_ENABLE="${EXT_ENABLE} redis" \
     ; fi \
+    && if [ "$INSTALL_SQLSRV" = "true" ]; then \
+        export BUILD_DEPS="${BUILD_DEPS} unixodbc-dev" \
+        && export PECLS="${PECLS} pdo_sqlsrv" \
+        && export EXT_ENABLE="${EXT_ENABLE} pdo_sqlsrv" \
+    ; fi \
     && if [ "$INSTALL_XDEBUG" = "true" ]; then \
         export PECLS="${PECLS} xdebug" \
         && export EXT_ENABLE="${EXT_ENABLE} xdebug" \
@@ -78,6 +86,16 @@ ONBUILD RUN \
             --with-png-dir=/usr/include/ \
             --with-jpeg-dir=/usr/include/ \
             --with-webp-dir=/usr/include/ \
+    ; fi \
+    && if [ "$INSTALL_SQLSRV" = "true" ]; then \
+        mkdir /tmp/mssql \
+        && cd /tmp/mssql \
+        && curl -Osf https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.5.1.1-1_amd64.apk \
+        && curl -Osf https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.5.1.2-1_amd64.apk \
+        && apk add --no-cache --allow-untrusted \
+            msodbcsql17_17.5.1.1-1_amd64.apk mssql-tools_17.5.1.2-1_amd64.apk \
+        && cd - \
+        && rm -rf /tmp/mssql \
     ; fi \
     && if [ "$INSTALL_ZIP" = "true" ]; then \
         docker-php-ext-configure zip --with-libzip \

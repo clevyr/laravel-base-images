@@ -18,6 +18,7 @@ These are a set of images with the needed dependencies installed without having 
 | INSTALL_MYSQL     | false   |
 | INSTALL_PGSQL     | true    |
 | INSTALL_REDIS     | false   |
+| INSTALL_SQLSRV    | false   |
 | INSTALL_XDEBUG    | false   |
 | INSTALL_ZIP       | false   |
 
