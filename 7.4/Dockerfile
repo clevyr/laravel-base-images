@@ -81,6 +81,9 @@ ONBUILD RUN \
     && docker-php-source extract \
     && if [ "$INSTALL_GD" = "true" ]; then \
         docker-php-ext-configure gd \
+            --with-freetype=/usr/include/ \
+            --with-jpeg=/usr/include/ \
+            --with-webp=/usr/include/ \
     ; fi \
     && if [ "$INSTALL_SQLSRV" = "true" ]; then \
         mkdir /tmp/mssql \
@@ -91,9 +94,6 @@ ONBUILD RUN \
             msodbcsql17_17.5.1.1-1_amd64.apk mssql-tools_17.5.1.2-1_amd64.apk \
         && cd - \
         && rm -rf /tmp/mssql \
-    ; fi \
-    && if [ "$INSTALL_ZIP" = "true" ]; then \
-        docker-php-ext-configure zip \
     ; fi \
     && if [ -n "$EXT_INSTALL" ]; then \
         docker-php-ext-install -j"$(nproc)" $EXT_INSTALL \
