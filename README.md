@@ -16,6 +16,7 @@ These are a set of images with the needed dependencies installed without having 
 | INSTALL_IMAGICK   | false   |
 | INSTALL_MOSQUITTO | false   |
 | INSTALL_MYSQL     | false   |
+| INSTALL_OPCACHE   | true    |
 | INSTALL_PGSQL     | true    |
 | INSTALL_REDIS     | false   |
 | INSTALL_SQLSRV    | false   |

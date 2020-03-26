@@ -14,6 +14,7 @@ ONBUILD ARG INSTALL_GD
 ONBUILD ARG INSTALL_IMAGICK
 ONBUILD ARG INSTALL_MOSQUITTO
 ONBUILD ARG INSTALL_MYSQL
+ONBUILD ARG INSTALL_OPCACHE
 ONBUILD ARG INSTALL_PGSQL
 ONBUILD ARG INSTALL_REDIS
 ONBUILD ARG INSTALL_SQLSRV
@@ -51,6 +52,9 @@ ONBUILD RUN \
     ; fi \
     && if [ "$INSTALL_MYSQL" = "true" ]; then \
         export EXT_INSTALL="${EXT_INSTALL} mysqli pdo_mysql" \
+    ; fi \
+    && if [ "$INSTALL_OPCACHE" != "false" ]; then \
+        export EXT_INSTALL="${EXT_INSTALL} opcache" \
     ; fi \
     && if [ "$INSTALL_PGSQL" != "false" ]; then \
         export EXT_INSTALL="${EXT_INSTALL} pgsql pdo_pgsql" \
