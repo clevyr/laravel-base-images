@@ -49,7 +49,7 @@ ONBUILD RUN \
         && export PECLS="${PECLS} Mosquitto-alpha" \
         && export EXT_ENABLE="${EXT_ENABLE} mosquitto" \
     ; fi \
-    && if [ "$INSTALL_MYSQL" != "false" ]; then \
+    && if [ "$INSTALL_MYSQL" = "true" ]; then \
         export EXT_INSTALL="${EXT_INSTALL} mysqli pdo_mysql" \
     ; fi \
     && if [ "$INSTALL_PGSQL" != "false" ]; then \
