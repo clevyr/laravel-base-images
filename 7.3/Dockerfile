@@ -123,6 +123,7 @@ ONBUILD RUN \
     && ln -s php.ini-production php.ini \
     && sed -ri \
         -e 's/^(expose_php).*$/\1 = Off/' \
-        php.ini-production \
+        -e 's/^(memory_limit).*$/\1 = 256M/' \
+        php.ini \
     && mkdir /run/nginx
 
