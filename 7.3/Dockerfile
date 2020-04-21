@@ -81,7 +81,7 @@ ONBUILD RUN \
     ; fi \
     && set -x \
     && apk add --virtual .build-deps $BUILD_DEPS $PHPIZE_DEPS \
-    && apk add $DEPS fcgi nginx s6 \
+    && apk add $DEPS fcgi git nginx s6 \
     && docker-php-source extract \
     && if [ "$INSTALL_GD" = "true" ]; then \
         docker-php-ext-configure gd \
