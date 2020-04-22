@@ -6,6 +6,7 @@ WORKDIR /app
 VOLUME /app
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=clevyr/prestissimo /tmp /root/.composer
 
 ONBUILD ARG INSTALL_BCMATH
 ONBUILD ARG INSTALL_CALENDAR
