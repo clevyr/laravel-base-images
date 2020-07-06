@@ -14,6 +14,7 @@ These are a set of images with the needed dependencies installed without having 
 | INSTALL_EXIF      | false   |
 | INSTALL_GD        | true    |
 | INSTALL_IMAGICK   | false   |
+| INSTALL_INTL      | false   |
 | INSTALL_MOSQUITTO | false   |
 | INSTALL_MYSQL     | false   |
 | INSTALL_OPCACHE   | true    |

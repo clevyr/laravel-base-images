@@ -13,6 +13,7 @@ ONBUILD ARG INSTALL_CALENDAR
 ONBUILD ARG INSTALL_EXIF
 ONBUILD ARG INSTALL_GD
 ONBUILD ARG INSTALL_IMAGICK
+ONBUILD ARG INSTALL_INTL
 ONBUILD ARG INSTALL_MOSQUITTO
 ONBUILD ARG INSTALL_MYSQL
 ONBUILD ARG INSTALL_OPCACHE
@@ -44,6 +45,11 @@ ONBUILD RUN \
         && export DEPS="${DEPS} imagemagick" \
         && PECLS="${PECLS} imagick" \
         && EXT_ENABLE="${EXT_ENABLE} imagick" \
+    ; fi \
+    && if [ "$INSTALL_INTL" = "true" ]; then \
+        export BUILD_DEPS="${BUILD_DEPS} icu-dev" \
+        export DEPS="${DEPS} icu-libs" \
+        export EXT_INSTALL="${EXT_INSTALL} intl" \
     ; fi \
     && if [ "$INSTALL_MOSQUITTO" = "true" ]; then \
         export BUILD_DEPS="${BUILD_DEPS} mosquitto-dev" \
