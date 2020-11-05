@@ -125,6 +125,9 @@ ONBUILD RUN \
     && rm -rf /tmp/* /var/cache/apk/* \
     && cd "$PHP_INI_DIR" \
     && sed -ri \
+        -e 's/^(access.log)/;\1/' \
+        ../php-fpm.d/docker.conf \
+    && sed -ri \
         -e 's/;(ping\.path)/\1/' \
         ../php-fpm.d/www.conf \
     && ln -s php.ini-production php.ini \
