@@ -1,31 +1,11 @@
-# Laravel Base Images
+# PHP Base Image
 
-These are a set of images with the needed dependencies installed without having to rebuild them every CI build.
+An enhanced version of the default [PHP Docker image](https://hub.docker.com/_/php) which can install PHP extensions without requiring manual dependency installation using [mlocati/docker-php-extension-installer](https://github.com/mlocati/docker-php-extension-installer) and installs a default nginx setup.
 
 
 ## Arguments
 
-### Install Flags
-
-| Build Arg         | Default |
-|-------------------|---------|
-| INSTALL_BCMATH    | true    |
-| INSTALL_CALENDAR  | false   |
-| INSTALL_EXIF      | false   |
-| INSTALL_GD        | true    |
-| INSTALL_IMAGICK   | false   |
-| INSTALL_INTL      | false   |
-| INSTALL_MOSQUITTO | false   |
-| INSTALL_MYSQL     | false   |
-| INSTALL_OPCACHE   | true    |
-| INSTALL_PGSQL     | true    |
-| INSTALL_REDIS     | false   |
-| INSTALL_SQLSRV    | false   |
-| INSTALL_XDEBUG    | false   |
-| INSTALL_ZIP       | false   |
-
-### Dependencies
-
-| Build Arg | Description                              |
-|-----------|------------------------------------------|
-| DEPS      | Other dependencies to install from `apk` |
+| Build Arg | Description                                                                                                                                         |
+|-----------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `INSTALL` | PHP extensions to install. See [here](https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions) for available extensions. |
+| `DEPS`    | `apk` dependencies to install during the build.                                                                                                     |
