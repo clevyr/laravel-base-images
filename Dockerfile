@@ -70,5 +70,16 @@ ONBUILD RUN \
     ; fi \
     && export INSTALL="$INSTALL $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | sort)" \
     && set -x \
+    && if echo "$INSTALL" | fgrep -q sqlsrv; then \
+        mkdir /tmp/sqlsrv \
+        && cd /tmp/sqlsrv \
+        && curl -Osf https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.5.1.1-1_amd64.apk \
+        && curl -Osf https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.5.1.2-1_amd64.apk \
+        && apk add --no-cache --allow-untrusted \
+            msodbcsql17_17.5.1.1-1_amd64.apk \
+            mssql-tools_17.5.1.2-1_amd64.apk \
+        && cd - \
+        && rm -rf /tmp/sqlsrv \
+    ; fi \
     && apk add $DEPS \
     && install-php-extensions $INSTALL
