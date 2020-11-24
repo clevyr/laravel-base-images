@@ -1,0 +1,47 @@
+#!/bin/sh
+
+set -e
+
+if [ "$INSTALL_BCMATH" != "false" ]; then
+    export INSTALL_BCMATH='true'
+fi
+
+if [ "$INSTALL_MYSQL" = "true" ]; then
+    unset INSTALL_MYSQL
+    export INSTALL_MYSQLI='true' \
+        INSTALL_PDO_MYSQL='true'
+fi
+
+if [ "$INSTALL_OPCACHE" != "false" ]; then
+    export INSTALL_OPCACHE='true'
+fi
+
+if [ "$INSTALL_PGSQL" != "false" ]; then
+    export INSTALL_PGSQL='true' \
+        INSTALL_PDO_PGSQL='true' \
+        DEPS="$DEPS postgresql-client"
+fi
+
+if [ "$INSTALL_SQLSRV" = "true" ]; then
+    export INSTALL_PDO_SQLSRV='true'
+fi
+
+INSTALL="$(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | sort | tr '[:upper:]' '[:lower:]' | tr '\n' ' ')"
+export INSTALL
+
+set -x
+
+if echo "$INSTALL" | grep -Fq sqlsrv; then
+    mkdir /tmp/sqlsrv
+    cd /tmp/sqlsrv
+    curl -Osf https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.5.1.1-1_amd64.apk
+    curl -Osf https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.5.1.2-1_amd64.apk
+    apk add --no-cache --allow-untrusted \
+        msodbcsql17_17.5.1.1-1_amd64.apk \
+        mssql-tools_17.5.1.2-1_amd64.apk
+    cd -
+    rm -rf /tmp/sqlsrv
+fi
+
+apk add $DEPS
+install-php-extensions $INSTALL
