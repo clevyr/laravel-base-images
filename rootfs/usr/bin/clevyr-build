@@ -2,31 +2,38 @@
 
 set -e
 
+# Convert old dependency args to new format with defaults
 if [ "$INSTALL_BCMATH" != "false" ]; then
-    export INSTALL_BCMATH='true'
+    unset INSTALL_BCMATH
+    export INSTALL="$INSTALL bcmath"
 fi
 
 if [ "$INSTALL_MYSQL" = "true" ]; then
     unset INSTALL_MYSQL
-    export INSTALL_MYSQLI='true' \
-        INSTALL_PDO_MYSQL='true'
+    export INSTALL="$INSTALL mysqli pdo_mysqli"
 fi
 
 if [ "$INSTALL_OPCACHE" != "false" ]; then
-    export INSTALL_OPCACHE='true'
+    unset INSTALL_OPCACHE
+    export INSTALL="$INSTALL opcache"
 fi
 
 if [ "$INSTALL_PGSQL" != "false" ]; then
-    export INSTALL_PGSQL='true' \
-        INSTALL_PDO_PGSQL='true' \
-        DEPS="$DEPS postgresql-client"
+    unset INSTALL_PGSQL
+    export INSTALL="$INSTALL pgsql pdo_pgsql"
 fi
 
 if [ "$INSTALL_SQLSRV" = "true" ]; then
-    export INSTALL_PDO_SQLSRV='true'
+    unset INSTALL_SQLSRV
+    export INSTALL="$INSTALL sqlsrv pdo_sqlsrv"
 fi
 
-INSTALL="$(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | sort | tr '[:upper:]' '[:lower:]' | tr '\n' ' ')"
+if [ -z "$INSTALL" ]; then
+    export INSTALL="$INSTALL bcmath opcache pgsql pdo_pgsql"
+fi
+
+# Add old dependency args to new variable
+INSTALL="$INSTALL $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | sort | tr '[:upper:]' '[:lower:]' | tr '\n' ' ')"
 export INSTALL
 
 set -x
