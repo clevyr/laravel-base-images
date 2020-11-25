@@ -45,19 +45,20 @@ for extension in $INSTALL; do
         sqlsrv | pdo_sqlsrv)
             if ! [ -d /tmp/sqlsrv ]; then
                 mkdir -p /tmp/sqlsrv
-                cd /tmp/sqlsrv
-                curl -sfo msodbc_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.6.1.1-1_amd64.apk
-                curl -sfo mssql-tools_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.6.1.1-1_amd64.apk
-                apk add --no-cache --allow-unsigned \
-                    msodbc_amd64.apk \
-                    mssql-tools_amd64.apk
-                cd -
+                curl -sfo /tmp/sqlsrv/msodbc_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.6.1.1-1_amd64.apk
+                curl -sfo /tmp/sqlsrv/mssql-tools_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.6.1.1-1_amd64.apk
+                export UNTRUSTED_DEPS="$UNTRUSTED_DEPS /tmp/sqlsrv/msodbc_amd64.apk /tmp/sqlsrv/mssql-tools_amd64.apk"
             fi
             ;;
     esac
 done
 
 set -x
+
+# Install untrusted permanent dependencies
+if [ -n "$UNTRUSTED_DEPS" ]; then
+    apk add --allow-untrusted $UNTRUSTED_DEPS
+fi
 
 # Install permanent dependencies
 if [ -n "$DEPS" ]; then
