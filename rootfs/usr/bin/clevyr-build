@@ -59,8 +59,12 @@ done
 
 set -x
 
+# Install permanent dependencies
+if [ -n "$DEPS" ]; then
+    apk add $DEPS
+fi
 
-apk add $DEPS
+# Install all php extensions
 install-php-extensions $INSTALL
 
 rm -rf /tmp/*
