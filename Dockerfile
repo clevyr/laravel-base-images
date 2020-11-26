@@ -26,7 +26,7 @@ RUN set -x \
         php.ini \
     && mkdir /run/nginx
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer
 COPY --from=clevyr/prestissimo /tmp /root/.composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
