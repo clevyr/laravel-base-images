@@ -41,8 +41,11 @@ jobs:
             PHP_VERSION=${{ matrix.php_version }}
 
   readme:
-    name: Update DockerHub Description
+    name: Update ${{ matrix.repository }} Description
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        repository: ["clevyr/php", "clevyr/laravel-base-image-builder"]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -51,10 +54,4 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: clevyr/php
-
-      - uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository: clevyr/laravel-base-image-builder
+          repository: ${{ matrix.repository }}
