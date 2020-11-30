@@ -10,7 +10,7 @@ fi
 
 if [ "$INSTALL_MYSQL" = "true" ]; then
     unset INSTALL_MYSQL
-    export INSTALL="$INSTALL mysqli pdo_mysqli"
+    export INSTALL="$INSTALL mysqli pdo_mysql"
 fi
 
 if [ "$INSTALL_OPCACHE" != "false" ]; then
