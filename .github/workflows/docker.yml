@@ -12,14 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php_version: ["7.1",  "7.2", "7.3", "7.4"]
+        php_version: ["7.1",  "7.2", "7.3", "7.4", "8.0"]
         platforms: ["linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x"]
         include:
           - php_version: "5.6"
             platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm64/v8,linux/ppc64le
           - php_version: "7.0"
             platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm64/v8,linux/ppc64le
-          - php_version: "7.4"
+          - php_version: "8.0"
             extra_tags: |
               clevyr/laravel-base-image-builder:latest
               clevyr/php:latest
