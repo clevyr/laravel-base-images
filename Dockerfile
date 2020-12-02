@@ -32,6 +32,9 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 
 COPY rootfs/ /
 
+ENV XDEBUG_MODE="debug"
+ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9000 start_with_request=trigger"
+
 ONBUILD ARG SKIP_BUILD
 ONBUILD ARG DEPS
 ONBUILD ARG INSTALL
