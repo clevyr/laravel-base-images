@@ -4,7 +4,6 @@ FROM php:$PHP_VERSION-fpm-alpine
 ENV LC_ALL=C
 
 WORKDIR /app
-VOLUME /app
 
 RUN set -x \
     && apk add --no-cache \
