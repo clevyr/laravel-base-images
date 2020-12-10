@@ -23,7 +23,10 @@ RUN set -x \
         -e 's/^(expose_php).*$/\1 = Off/' \
         -e 's/^(memory_limit).*$/\1 = 256M/' \
         php.ini \
-    && mkdir /run/nginx
+    && mkdir /run/nginx \
+    && sed -ri \
+        -e 's/#(tcp_nopush on;)/\1/' \
+        /etc/nginx/nginx.conf
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY --from=clevyr/prestissimo /tmp /root/.composer
