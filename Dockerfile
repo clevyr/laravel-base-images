@@ -26,7 +26,10 @@ RUN set -x \
     && mkdir /run/nginx \
     && sed -ri \
         -e 's/#(tcp_nopush on;)/\1/' \
-        /etc/nginx/nginx.conf
+        /etc/nginx/nginx.conf \
+    && sed -ri \
+        -e '$ s/(})/    application\/wasm wasm;\n\1/' \
+        /etc/nginx/mime.types
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 COPY --from=clevyr/prestissimo /tmp /root/.composer
