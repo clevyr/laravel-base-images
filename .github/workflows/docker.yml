@@ -68,6 +68,7 @@ jobs:
   readme:
     name: Update ${{ matrix.repository }} Description
     runs-on: ubuntu-latest
+    needs: build
     strategy:
       matrix:
         repository: ["clevyr/php", "clevyr/laravel-base-image-builder"]
