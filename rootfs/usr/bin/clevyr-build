@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ef
 
 log() {
     printf '%s: %s\n' "$(basename "$0")" "$@" >&2
@@ -35,19 +35,21 @@ if [ -z "$INSTALL" ]; then
 fi
 
 # Add old dependency args to new variable
-INSTALL="$INSTALL $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | sort | tr '[:upper:]' '[:lower:]' | tr '\n' ' ')"
-export INSTALL
-log "Will attempt to install \"$INSTALL\""
+INSTALL=( $INSTALL )
+INSTALL+=( $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | tr '[:upper:]' '[:lower:]') )
+
+DEPS=( $DEPS )
+UNTRUSTED_DEPS=( $UNTRUSTED_DEPS )
 
 # Check for dependencies
 export BUILD_TMP='/tmp/clevyr-build'
 mkdir -p "$BUILD_TMP"
-for extension in $INSTALL; do
+for extension in "${INSTALL[@]}"; do
     case "$extension" in
         pgsql | pdo_pgsql)
             if ! [ -f "$BUILD_TMP/pgsql" ]; then
                 log 'Adding postgresql-client to DEPS'
-                export DEPS="$DEPS postgresql-client"
+                DEPS+=( 'postgresql-client' )
                 touch "$BUILD_TMP/pgsql"
             fi
             ;;
@@ -58,32 +60,32 @@ for extension in $INSTALL; do
                 log 'Downloading sqlsrv dependencies: msodbc'
                 curl -sfo "$BUILD_TMP/sqlsrv/msodbc_amd64.apk" \
                     https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.6.1.1-1_amd64.apk
-                export UNTRUSTED_DEPS="$UNTRUSTED_DEPS $BUILD_TMP/sqlsrv/msodbc_amd64.apk"
+                UNTRUSTED_DEPS+=( "$BUILD_TMP/sqlsrv/msodbc_amd64.apk" )
 
                 log 'Downloading sqlsrv dependencies: mssql-tools'
                 curl -sfo "$BUILD_TMP/sqlsrv/mssql-tools_amd64.apk" \
                     https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.6.1.1-1_amd64.apk
-                export UNTRUSTED_DEPS="$UNTRUSTED_DEPS $BUILD_TMP/sqlsrv/mssql-tools_amd64.apk"
+                UNTRUSTED_DEPS+=( "$BUILD_TMP/sqlsrv/mssql-tools_amd64.apk" )
             fi
             ;;
     esac
 done
 
 # Install untrusted permanent dependencies
-if [ -n "$UNTRUSTED_DEPS" ]; then
-    log 'Installing UNTRUSTED_DEPS'
-    apk add --allow-untrusted $UNTRUSTED_DEPS
+if [ "${#UNTRUSTED_DEPS[@]}" != 0 ]; then
+    log "Installing UNTRUSTED_DEPS: ${UNTRUSTED_DEPS[*]}"
+    apk add --allow-untrusted "${UNTRUSTED_DEPS[@]}"
 fi
 
 # Install permanent dependencies
-if [ -n "$DEPS" ]; then
-    log 'Installing DEPS'
-    apk add $DEPS
+if [ "${#DEPS[@]}" != 0 ]; then
+    log "Installing DEPS: ${DEPS[*]}"
+    apk add "${DEPS[@]}"
 fi
 
 # Install all php extensions
-log 'Beginning install'
-install-php-extensions $INSTALL
+log "Beginning install: ${INSTALL[*]}"
+install-php-extensions "${INSTALL[@]}"
 
 # Template nginx config
 log 'Templating nginx config'
