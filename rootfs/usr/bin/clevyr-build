@@ -2,6 +2,10 @@
 
 set -e
 
+log() {
+    printf '%s: %s\n' "$(basename "$0")" "$@" >&2
+}
+
 # Convert old dependency args to new format with defaults
 if [ -z "$INSTALL" ]; then
     if [ "$INSTALL_BCMATH" != "false" ]; then
@@ -33,41 +37,48 @@ fi
 # Add old dependency args to new variable
 INSTALL="$INSTALL $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | sort | tr '[:upper:]' '[:lower:]' | tr '\n' ' ')"
 export INSTALL
+log "Will attempt to install \"$INSTALL\""
 
 # Check for dependencies
 for extension in $INSTALL; do
     case "$extension" in
         pgsql | pdo_pgsql)
+            log 'Adding postgresql-client to DEPS'
             export DEPS="${DEPS/ postgresql-client/} postgresql-client"
             ;;
         sqlsrv | pdo_sqlsrv)
             if ! [ -d /tmp/sqlsrv ]; then
+                log 'Downloading sqlsrv dependencies'
                 mkdir -p /tmp/sqlsrv
                 curl -sfo /tmp/sqlsrv/msodbc_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.6.1.1-1_amd64.apk
                 curl -sfo /tmp/sqlsrv/mssql-tools_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.6.1.1-1_amd64.apk
+                log 'Adding sqlsrv dependencies to UNTRUSTED_DEPS'
                 export UNTRUSTED_DEPS="$UNTRUSTED_DEPS /tmp/sqlsrv/msodbc_amd64.apk /tmp/sqlsrv/mssql-tools_amd64.apk"
             fi
             ;;
     esac
 done
 
-set -x
-
 # Install untrusted permanent dependencies
 if [ -n "$UNTRUSTED_DEPS" ]; then
+    log 'Installing UNTRUSTED_DEPS'
     apk add --allow-untrusted $UNTRUSTED_DEPS
 fi
 
 # Install permanent dependencies
 if [ -n "$DEPS" ]; then
+    log 'Installing DEPS'
     apk add $DEPS
 fi
 
 # Install all php extensions
+log 'Beginning install'
 install-php-extensions $INSTALL
 
 # Template nginx config
+log 'Templating nginx config'
 export NGINX_ROOT="${NGINX_ROOT:-/app/public}"
 envsubst '$NGINX_ROOT' < /etc/nginx/conf.d/default.conf.tpl > /etc/nginx/conf.d/default.conf
 
+log 'Removing all tmp files'
 rm -rf /tmp/*
