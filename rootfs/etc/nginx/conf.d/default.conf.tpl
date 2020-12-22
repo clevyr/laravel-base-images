@@ -6,7 +6,7 @@ server {
 
     access_log off;
 
-    root /app/public;
+    root $NGINX_ROOT;
     index index.php index.html index.htm;
 
     client_max_body_size 0;

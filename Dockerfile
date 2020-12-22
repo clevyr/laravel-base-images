@@ -8,6 +8,7 @@ WORKDIR /app
 RUN set -x \
     && apk add --no-cache \
         fcgi \
+        gettext \
         git \
         nginx \
         s6 \
@@ -60,6 +61,8 @@ ONBUILD ARG INSTALL_REDIS
 ONBUILD ARG INSTALL_SQLSRV
 ONBUILD ARG INSTALL_XDEBUG
 ONBUILD ARG INSTALL_ZIP
+
+ONBUILD ARG NGINX_ROOT
 
 ONBUILD RUN \
     if [ "$SKIP_BUILD" != "true" ]; then \
