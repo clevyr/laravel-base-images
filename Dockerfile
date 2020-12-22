@@ -7,6 +7,7 @@ WORKDIR /app
 
 RUN set -x \
     && apk add --no-cache \
+        bash \
         fcgi \
         gettext \
         git \
