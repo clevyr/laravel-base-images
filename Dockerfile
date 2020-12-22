@@ -21,10 +21,6 @@ RUN set -x \
         -e 's/;(ping\.path)/\1/' \
         ../php-fpm.d/www.conf \
     && ln -s php.ini-production php.ini \
-    && sed -ri \
-        -e 's/^(expose_php).*$/\1 = Off/' \
-        -e 's/^(memory_limit).*$/\1 = 256M/' \
-        php.ini \
     && mkdir /run/nginx \
     && sed -ri \
         -e 's/#(tcp_nopush on;)/\1/' \
@@ -65,6 +61,12 @@ ONBUILD ARG INSTALL_ZIP
 
 ONBUILD ARG NGINX_ROOT
 ONBUILD ARG NGINX_EXPIRES
+
+ONBUILD ARG PHP_CONF_MAX_EXECUTION_TIME
+ONBUILD ARG PHP_CONF_MAX_INPUT_VARS
+ONBUILD ARG PHP_CONF_MEMORY_LIMIT
+ONBUILD ARG PHP_CONF_POST_MAX_SIZE
+ONBUILD ARG PHP_CONF_UPLOAD_MAX_FILESIZE
 
 ONBUILD RUN \
     if [ "$SKIP_BUILD" != "true" ]; then \

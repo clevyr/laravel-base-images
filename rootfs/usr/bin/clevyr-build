@@ -93,5 +93,19 @@ export NGINX_ROOT="${NGINX_ROOT:-/app/public}" \
     NGINX_EXPIRES="${NGINX_EXPIRES:-7d}"
 envsubst '$NGINX_ROOT $NGINX_EXPIRES' < /etc/nginx/conf.d/default.conf.tpl > /etc/nginx/conf.d/default.conf
 
+# Template php config
+log 'Templating php config'
+export PHP_CONF_MEMORY_LIMIT="${PHP_MEMORY_LIMIT:-256M}" \
+    PHP_CONF_UPLOAD_MAX_FILESIZE="${PHP_UPLOAD_MAX_FILESIZE:-8M}" \
+    PHP_CONF_POST_MAX_SIZE="${PHP_POST_MAX_SIZE:-32M}" \
+    PHP_CONF_EXPOSE_PHP='Off'
+PHP_OVERRIDES=( $(env | grep '^PHP_CONF_' | sort | cut -d= -f1) )
+for override in "${PHP_OVERRIDES[@]}"; do
+    key="$(cut -d_ -f3- <<< "$override"| tr '[:upper:]' '[:lower:]')"
+    value="${!override}"
+    log "Set $key = $value"
+    sed -ri "s/^(; )?($key) =.*/\2 = ${!override}/" "$PHP_INI_DIR/php.ini-production"
+done
+
 log 'Removing all tmp files'
 rm -rf /tmp/*
