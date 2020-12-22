@@ -40,6 +40,8 @@ COPY rootfs/ /
 ENV XDEBUG_MODE="debug"
 ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9000 start_with_request=trigger"
 
+CMD ["s6-svscan", "/etc/services.d"]
+
 ONBUILD ARG SKIP_BUILD
 ONBUILD ARG DEPS
 ONBUILD ARG INSTALL
