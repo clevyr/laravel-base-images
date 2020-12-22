@@ -17,13 +17,13 @@ server {
 
     location ~* \.(?:css(\.map)?|js(\.map)?|jpe?g|png|gif|ico|cur|heic|webp|tiff?|mp3|m4a|aac|ogg|midi?|wav|mp4|mov|webm|mpe?g|avi|ogv|flv|wmv)$ {
         try_files $uri $uri/ /index.php?$query_string;
-        expires 7d;
+        expires $NGINX_EXPIRES;
     }
 
     location ~* \.(?:svgz?|ttf|ttc|otf|eot|woff2?)$ {
         try_files $uri $uri/ /index.php?$query_string;
         add_header Access-Control-Allow-Origin "*";
-        expires 7d;
+        expires $NGINX_EXPIRES;
     }
 
     location ~ [^/]\.php(/|$) {

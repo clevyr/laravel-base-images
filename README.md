@@ -5,11 +5,12 @@ An enhanced version of the default [PHP Docker image](https://hub.docker.com/_/p
 
 ## Build Arguments
 
-| Build Arg    | Description                                                                                                                                         |
-|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `INSTALL`    | PHP extensions to install. See [here](https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions) for available extensions. |
-| `DEPS`       | `apk` dependencies to install during the build.                                                                                                     |
-| `NGINX_ROOT` | The root directory that nginx should serve. Defaults to `/app/public`                                                                               |
+| Build Arg       | Description                                                                                                                                         |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `INSTALL`       | PHP extensions to install. See [here](https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions) for available extensions. |
+| `DEPS`          | `apk` dependencies to install during the build.                                                                                                     |
+| `NGINX_ROOT`    | The root directory that nginx should serve. Defaults to `/app/public`.                                                                              |
+| `NGINX_EXPIRES` | The length of time nginx should allow clients to keep static assets cached. Defaults to `7d`.                                                       |
 
 ### Legacy Build Arguments
 
