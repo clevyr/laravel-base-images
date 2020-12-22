@@ -40,20 +40,30 @@ export INSTALL
 log "Will attempt to install \"$INSTALL\""
 
 # Check for dependencies
+export BUILD_TMP='/tmp/clevyr-build'
+mkdir -p "$BUILD_TMP"
 for extension in $INSTALL; do
     case "$extension" in
         pgsql | pdo_pgsql)
-            log 'Adding postgresql-client to DEPS'
-            export DEPS="${DEPS/ postgresql-client/} postgresql-client"
+            if ! [ -f "$BUILD_TMP/pgsql" ]; then
+                log 'Adding postgresql-client to DEPS'
+                export DEPS="$DEPS postgresql-client"
+                touch "$BUILD_TMP/pgsql"
+            fi
             ;;
         sqlsrv | pdo_sqlsrv)
-            if ! [ -d /tmp/sqlsrv ]; then
-                log 'Downloading sqlsrv dependencies'
-                mkdir -p /tmp/sqlsrv
-                curl -sfo /tmp/sqlsrv/msodbc_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.6.1.1-1_amd64.apk
-                curl -sfo /tmp/sqlsrv/mssql-tools_amd64.apk https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.6.1.1-1_amd64.apk
-                log 'Adding sqlsrv dependencies to UNTRUSTED_DEPS'
-                export UNTRUSTED_DEPS="$UNTRUSTED_DEPS /tmp/sqlsrv/msodbc_amd64.apk /tmp/sqlsrv/mssql-tools_amd64.apk"
+            if ! [ -d "$BUILD_TMP/sqlsrv" ]; then
+                mkdir -p "$BUILD_TMP/sqlsrv"
+
+                log 'Downloading sqlsrv dependencies: msodbc'
+                curl -sfo "$BUILD_TMP/sqlsrv/msodbc_amd64.apk" \
+                    https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.6.1.1-1_amd64.apk
+                export UNTRUSTED_DEPS="$UNTRUSTED_DEPS $BUILD_TMP/sqlsrv/msodbc_amd64.apk"
+
+                log 'Downloading sqlsrv dependencies: mssql-tools'
+                curl -sfo "$BUILD_TMP/sqlsrv/mssql-tools_amd64.apk" \
+                    https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.6.1.1-1_amd64.apk
+                export UNTRUSTED_DEPS="$UNTRUSTED_DEPS $BUILD_TMP/sqlsrv/mssql-tools_amd64.apk"
             fi
             ;;
     esac
