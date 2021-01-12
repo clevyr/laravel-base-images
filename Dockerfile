@@ -29,7 +29,10 @@ RUN set -x \
         -e '$ s/(})/    application\/wasm wasm;\n\1/' \
         /etc/nginx/mime.types
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
+RUN ln -s composer2 /usr/bin/composer
+
 COPY --from=clevyr/prestissimo /tmp /root/.composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
