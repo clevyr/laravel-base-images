@@ -13,6 +13,7 @@ RUN set -x \
         git \
         nginx \
         s6 \
+        su-exec \
     && cd "$PHP_INI_DIR" \
     && sed -ri \
         -e 's/^(access.log)/;\1/' \
