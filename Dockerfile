@@ -34,6 +34,8 @@ RUN set -x \
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
 RUN ln -s composer2 /usr/bin/composer
+ARG COMPOSER_MEMORY_LIMIT=-1
+ENV COMPOSER_MEMORY_LIMIT=$COMPOSER_MEMORY_LIMIT
 
 COPY --from=clevyr/prestissimo /tmp /root/.composer
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
