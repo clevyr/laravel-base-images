@@ -8,6 +8,18 @@ An enhanced version of the default [PHP Docker image](https://hub.docker.com/_/p
 docker pull clevyr/php:<PHP version>
 ```
 
+## Runtime Configuration
+
+### PHP-FPM Configuration
+
+| Environment Variable           | Description                                                                                                     | Default |
+|--------------------------------|-----------------------------------------------------------------------------------------------------------------|---------|
+| `PHP_FPM_PM_MAX_CHILDREN`      | See [`pm.max_children`](https://www.php.net/manual/en/install.fpm.configuration.php#pm.max-children).           | `20`    |
+| `PHP_FPM_PM_START_SERVERS`     | See [`pm.start_servers`](https://www.php.net/manual/en/install.fpm.configuration.php#pm.start-servers).         | `2`     |
+| `PHP_FPM_PM_MIN_SPARE_SERVERS` | See [`pm.min_spare_servers`](https://www.php.net/manual/en/install.fpm.configuration.php#pm.min-spare-servers). | `1`     |
+| `PHP_FPM_PM_MAX_SPARE_SERVERS` | See [`pm.max_spare_servers`](https://www.php.net/manual/en/install.fpm.configuration.php#pm.max-spare-servers). | `3`     |
+| `PHP_FPM_PM_MAX_REQUESTS`      | See [`pm.max_requests`](https://www.php.net/manual/en/install.fpm.configuration.php#pm.max-requests).           | `0`     |
+
 ## Build Arguments
 
 | Build Arg       | Description                                                                                                                                         |

@@ -20,7 +20,12 @@ RUN set -x \
         -e 's/^(access.log)/;\1/' \
         ../php-fpm.d/docker.conf \
     && sed -ri \
-        -e 's/;(ping\.path)/\1/' \
+        -e 's/^;(ping\.path)/\1/' \
+        -e 's/^;?(pm\.max_children).*/\1 = ${PHP_FPM_PM_MAX_CHILDREN}/' \
+        -e 's/^;?(pm\.start_servers).*/\1 = ${PHP_FPM_PM_START_SERVERS}/' \
+        -e 's/^;?(pm\.min_spare_servers).*/\1 = ${PHP_FPM_PM_MIN_SPARE_SERVERS}/' \
+        -e 's/^;?(pm\.max_spare_servers).*/\1 = ${PHP_FPM_PM_MAX_SPARE_SERVERS}/' \
+        -e 's/^;?(pm\.max_requests).*/\1 = ${PHP_FPM_PM_MAX_REQUESTS}/' \
         ../php-fpm.d/www.conf \
     && ln -s php.ini-production php.ini \
     && mkdir /run/nginx \
@@ -44,6 +49,12 @@ COPY rootfs/ /
 
 ENV XDEBUG_MODE="debug"
 ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9000 start_with_request=trigger"
+
+ENV PHP_FPM_PM_MAX_CHILDREN=20
+ENV PHP_FPM_PM_START_SERVERS=2
+ENV PHP_FPM_PM_MIN_SPARE_SERVERS=1
+ENV PHP_FPM_PM_MAX_SPARE_SERVERS=3
+ENV PHP_FPM_PM_MAX_REQUESTS=0
 
 CMD ["s6-svscan", "/etc/services.d"]
 
