@@ -27,6 +27,14 @@ RUN set -x \
         -e 's/^;?(pm\.max_spare_servers).*/\1 = ${PHP_FPM_PM_MAX_SPARE_SERVERS}/' \
         -e 's/^;?(pm\.max_requests).*/\1 = ${PHP_FPM_PM_MAX_REQUESTS}/' \
         ../php-fpm.d/www.conf \
+    && sed -ri \
+        -e 's/^;?(max_execution_time).*/\1 = ${PHP_MAX_EXECUTION_TIME}/' \
+        -e 's/^;?(max_input_vars).*/\1 = ${PHP_MAX_INPUT_VARS}/' \
+        -e 's/^;?(memory_limit).*/\1 = ${PHP_MEMORY_LIMIT}/' \
+        -e 's/^;?(post_max_size).*/\1 = ${PHP_POST_MAX_SIZE}/' \
+        -e 's/^;?(upload_max_filesize).*/\1 = ${PHP_UPLOAD_MAX_FILESIZE}/' \
+        -e 's/^;?(expose_php).*/\1 = Off/' \
+        php.ini-production \
     && ln -s php.ini-production php.ini \
     && mkdir /run/nginx \
     && sed -ri \
@@ -56,6 +64,12 @@ ENV PHP_FPM_PM_MIN_SPARE_SERVERS=1
 ENV PHP_FPM_PM_MAX_SPARE_SERVERS=3
 ENV PHP_FPM_PM_MAX_REQUESTS=0
 
+ENV PHP_MAX_EXECUTION_TIME=30
+ENV PHP_MAX_INPUT_VARS=1000
+ENV PHP_MEMORY_LIMIT=256M
+ENV PHP_POST_MAX_SIZE=32M
+ENV PHP_UPLOAD_MAX_FILESIZE=8M
+
 CMD ["s6-svscan", "/etc/services.d"]
 
 ONBUILD ARG SKIP_BUILD
@@ -79,12 +93,6 @@ ONBUILD ARG INSTALL_ZIP
 
 ONBUILD ARG NGINX_ROOT
 ONBUILD ARG NGINX_EXPIRES
-
-ONBUILD ARG PHP_CONF_MAX_EXECUTION_TIME
-ONBUILD ARG PHP_CONF_MAX_INPUT_VARS
-ONBUILD ARG PHP_CONF_MEMORY_LIMIT
-ONBUILD ARG PHP_CONF_POST_MAX_SIZE
-ONBUILD ARG PHP_CONF_UPLOAD_MAX_FILESIZE
 
 ONBUILD RUN \
     if [ "$SKIP_BUILD" != "true" ]; then \

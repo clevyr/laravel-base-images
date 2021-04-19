@@ -10,6 +10,18 @@ docker pull clevyr/php:<PHP version>
 
 ## Runtime Configuration
 
+### PHP Configuration
+
+Some php.ini values can be configured as a build arg.
+
+| Build Arg                 | Description                                                                                              | Default |
+|---------------------------|----------------------------------------------------------------------------------------------------------|---------|
+| `PHP_MAX_EXECUTION_TIME`  | See [`max_execution_time`](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time). | `30`    |
+| `PHP_MAX_INPUT_VARS`      | See [`max_input_vars`](https://www.php.net/manual/en/info.configuration.php#ini.max-input-vars).         | `1000`  |
+| `PHP_MEMORY_LIMIT`        | See [`memory_limit`](https://www.php.net/manual/en/ini.core.php#ini.memory-limit).                       | `256M`  |
+| `PHP_POST_MAX_SIZE`       | See [`post_max_size`](https://www.php.net/manual/en/ini.core.php#ini.post-max-size).                     | `32M`   |
+| `PHP_UPLOAD_MAX_FILESIZE` | See [`upload_max_filesize`](https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize).         | `8M`    |
+
 ### PHP-FPM Configuration
 
 | Environment Variable           | Description                                                                                                     | Default |
@@ -35,18 +47,6 @@ Some nginx values can be configured as a build arg.
 |-----------------|-------------------------------------------------------------------------------|---------------|
 | `NGINX_ROOT`    | [root](http://nginx.org/en/docs/http/ngx_http_core_module.html#root)          | `/app/public` |
 | `NGINX_EXPIRES` | [expires](http://nginx.org/en/docs/http/ngx_http_headers_module.html#expires) | `7d`          |
-
-### PHP Configuration
-
-Some php.ini values can be configured as a build arg.
-
-| Build Arg                      | `php.ini` Directive                                                                               | Default |
-|--------------------------------|---------------------------------------------------------------------------------------------------|---------|
-| `PHP_CONF_MAX_EXECUTION_TIME`  | [max_execution_time](https://www.php.net/manual/en/info.configuration.php#ini.max-execution-time) | `30`    |
-| `PHP_CONF_MAX_INPUT_VARS`      | [max_input_vars](https://www.php.net/manual/en/info.configuration.php#ini.max-input-vars)         | `1000`  |
-| `PHP_CONF_MEMORY_LIMIT`        | [memory_limit](https://www.php.net/manual/en/ini.core.php#ini.memory-limit)                       | `256M`  |
-| `PHP_CONF_POST_MAX_SIZE`       | [post_max_size](https://www.php.net/manual/en/ini.core.php#ini.post-max-size)                     | `32M`   |
-| `PHP_CONF_UPLOAD_MAX_FILESIZE` | [upload_max_filesize](https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize)         | `8M`    |
 
 ### Legacy Build Arguments
 
