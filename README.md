@@ -10,6 +10,8 @@ docker pull clevyr/php:<PHP version>
 
 ## Runtime Configuration
 
+The following variables can be configured at build (Typically with an `ARG` in the `Dockerfile`) or during runtime (With environment variables).
+
 ### PHP Configuration
 
 Some php.ini values can be configured as a build arg.
@@ -33,6 +35,8 @@ Some php.ini values can be configured as a build arg.
 | `PHP_FPM_PM_MAX_REQUESTS`      | See [`pm.max_requests`](https://www.php.net/manual/en/install.fpm.configuration.php#pm.max-requests).           | `0`     |
 
 ## Build Arguments
+
+The following variables can be only be configured at build.
 
 | Build Arg       | Description                                                                                                                                         |
 |-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
