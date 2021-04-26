@@ -56,7 +56,7 @@ COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr
 COPY rootfs/ /
 
 ENV XDEBUG_MODE="debug"
-ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9000 start_with_request=trigger"
+ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9000 start_with_request=trigger log_level=0"
 
 ENV PHP_FPM_PM_MAX_CHILDREN=20
 ENV PHP_FPM_PM_START_SERVERS=2
