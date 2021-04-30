@@ -33,6 +33,7 @@ RUN set -x \
         -e 's/^;?(memory_limit).*/\1 = ${PHP_MEMORY_LIMIT}/' \
         -e 's/^;?(post_max_size).*/\1 = ${PHP_POST_MAX_SIZE}/' \
         -e 's/^;?(upload_max_filesize).*/\1 = ${PHP_UPLOAD_MAX_FILESIZE}/' \
+        -e 's/^;?(max_file_uploads).*/\1 = ${PHP_MAX_FILE_UPLOADS}/' \
         -e 's/^;?(expose_php).*/\1 = Off/' \
         php.ini-production \
     && ln -s php.ini-production php.ini \
@@ -81,6 +82,8 @@ ONBUILD ARG PHP_POST_MAX_SIZE
 ONBUILD ENV PHP_POST_MAX_SIZE=${PHP_POST_MAX_SIZE:-32M}
 ONBUILD ARG PHP_UPLOAD_MAX_FILESIZE
 ONBUILD ENV PHP_UPLOAD_MAX_FILESIZE=${PHP_UPLOAD_MAX_FILESIZE:-8M}
+ONBUILD ARG PHP_MAX_FILE_UPLOADS
+ONBUILD ENV PHP_MAX_FILE_UPLOADS=${PHP_MAX_FILE_UPLOADS:-20}
 
 ONBUILD ARG SKIP_BUILD
 ONBUILD ARG DEPS

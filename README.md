@@ -23,6 +23,7 @@ Some php.ini values can be configured as a build arg.
 | `PHP_MEMORY_LIMIT`        | See [`memory_limit`](https://www.php.net/manual/en/ini.core.php#ini.memory-limit).                       | `256M`  |
 | `PHP_POST_MAX_SIZE`       | See [`post_max_size`](https://www.php.net/manual/en/ini.core.php#ini.post-max-size).                     | `32M`   |
 | `PHP_UPLOAD_MAX_FILESIZE` | See [`upload_max_filesize`](https://www.php.net/manual/en/ini.core.php#ini.upload-max-filesize).         | `8M`    |
+| `PHP_MAX_FILE_UPLOADS`    | See [`max_file_uploads`](https://www.php.net/manual/en/ini.core.php#ini.max-file-uploads).               | `20`    |
 
 ### PHP-FPM Configuration
 
