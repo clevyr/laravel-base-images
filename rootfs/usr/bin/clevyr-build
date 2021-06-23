@@ -33,7 +33,7 @@ if [ "$INSTALL_SQLSRV" = "true" ]; then
 fi
 
 # Add old dependency args to new variable
-INSTALL=( $INSTALL )
+INSTALL=( $INSTALL "$@" )
 INSTALL+=( $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | tr '[:upper:]' '[:lower:]') )
 
 DEPS=( $DEPS )
