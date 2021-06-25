@@ -12,6 +12,7 @@ RUN set -x \
         fcgi \
         gettext \
         git \
+        jq \
         nginx \
         s6 \
         su-exec \
@@ -21,6 +22,7 @@ RUN set -x \
         ../php-fpm.d/docker.conf \
     && sed -ri \
         -e 's/^;(ping\.path)/\1/' \
+        -e 's/^;(pm\.status_path)/\1/' \
         -e 's/^;?(pm\.max_children).*/\1 = ${PHP_FPM_PM_MAX_CHILDREN}/' \
         -e 's/^;?(pm\.start_servers).*/\1 = ${PHP_FPM_PM_START_SERVERS}/' \
         -e 's/^;?(pm\.min_spare_servers).*/\1 = ${PHP_FPM_PM_MIN_SPARE_SERVERS}/' \
