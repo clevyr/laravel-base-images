@@ -39,10 +39,11 @@ Some php.ini values can be configured as a build arg.
 
 The following variables can be only be configured at build.
 
-| Build Arg       | Description                                                                                                                                         |
-|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `INSTALL`       | PHP extensions to install. See [here](https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions) for available extensions. |
-| `DEPS`          | `apk` dependencies to install during the build.                                                                                                     |
+| Build Arg          | Description                                                                                                                                         |
+|--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
+| `COMPOSER_VERSION` | The Composer version to alias. Each version is always available as `composer1` and `composer2`, but this will symlink the alias for `composer`      |
+| `INSTALL`          | PHP extensions to install. See [here](https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions) for available extensions. |
+| `DEPS`             | `apk` dependencies to install during the build.                                                                                                     |
 
 ### Nginx Configuration
 
