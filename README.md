@@ -5,7 +5,7 @@ An enhanced version of the default [PHP Docker image](https://hub.docker.com/_/p
 ## Pull Command
 
 ```sh
-docker pull clevyr/php:<PHP version>
+docker pull ghcr.io/clevyr/php:<PHP version>
 ```
 
 ## Runtime Configuration
