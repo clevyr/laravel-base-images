@@ -1,5 +1,7 @@
 # PHP Base Image
 
+[![Docker Build](https://github.com/clevyr/docker-php/actions/workflows/docker.yml/badge.svg)](https://github.com/clevyr/docker-php/actions/workflows/docker.yml)
+
 An enhanced version of the default [PHP Docker image](https://hub.docker.com/_/php) which can install PHP extensions without requiring manual dependency installation using [mlocati/docker-php-extension-installer](https://github.com/mlocati/docker-php-extension-installer) and installs a default nginx setup.
 
 ## Pull Command
