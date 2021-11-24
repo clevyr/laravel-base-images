@@ -12,4 +12,4 @@ SCRIPT_NAME=/status \
     REQUEST_METHOD=GET \
     QUERY_STRING=json \
     cgi-fcgi -bind -connect 127.0.0.1:9000 \
-    | jq -Rrc --arg key "${1:-}" "$query"
+    | jq -Rr --arg key "${1:-}" "$query"
