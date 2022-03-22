@@ -13,26 +13,17 @@ jobs:
     strategy:
       matrix:
         php_version: ["7.2", "7.3", "7.4", "8.0"]
-        alpine_version: ["3.12"]
-        platforms: ["linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8,linux/ppc64le,linux/s390x"]
+        platforms: ["linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8"]
         include:
           - php_version: "5.6"
-            alpine_version: "3.8"
-            platforms: linux/amd64,linux/arm/v6,linux/arm64/v8
             extra_tags: |
               ghcr.io/clevyr/php:5
               clevyr/php:5
-          - php_version: "7.0"
-            alpine_version: "3.7"
-            platforms: linux/amd64,linux/arm/v6,linux/arm64/v8
-          - php_version: "7.1"
-            alpine_version: "3.10"
           - php_version: "7.4"
             extra_tags: |
               ghcr.io/clevyr/php:7
               clevyr/php:7
           - php_version: "8.1"
-            alpine_version: "3.15"
             extra_tags: |
               ghcr.io/clevyr/php:8
               clevyr/php:8
@@ -80,7 +71,6 @@ jobs:
             ${{ matrix.extra_tags }}
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
-            ALPINE_VERSION=${{ matrix.alpine_version }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 
