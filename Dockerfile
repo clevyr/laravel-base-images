@@ -39,13 +39,17 @@ RUN set -x \
         -e 's/^;?(expose_php).*/\1 = Off/' \
         php.ini-production \
     && ln -s php.ini-production php.ini \
-    && mkdir /run/nginx \
+    && mkdir -p /run/nginx \
     && sed -ri \
         -e 's/#(tcp_nopush on;)/\1/' \
         /etc/nginx/nginx.conf \
     && sed -ri \
         -e '$ s/(})/    application\/wasm wasm;\n\1/' \
-        /etc/nginx/mime.types
+        /etc/nginx/mime.types \
+    && if [ -d /etc/nginx/http.d ]; then \
+        mv /etc/nginx/http.d /etc/nginx/conf.d \
+        && sed -i 's|/etc/nginx/http.d|/etc/nginx/conf.d|g' /etc/nginx/nginx.conf \
+    ; fi
 
 COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
