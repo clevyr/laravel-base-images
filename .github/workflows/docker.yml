@@ -8,50 +8,120 @@ on:
 
 jobs:
   build:
-    name: Build ${{ matrix.php_version }}-composer${{ matrix.composer_version }}
+    name: Build ${{ matrix.php_version }}-composer${{ matrix.composer_version }}-${{ matrix.target }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php_version: ["5.6", "7.2", "7.3", "7.4", "8.0", "8.1"]
         composer_version: ["1", "2"]
+        target: ["base", "onbuild"]
         platforms: ["linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8"]
         include:
           - php_version: "5.6"
+            composer_version: "1"
+            target: "onbuild"
+            extra_tags: |
+              clevyr/php:5-composer1
+              clevyr/php:5.6-composer1
+              ghcr.io/clevyr/php:5-composer1
+              ghcr.io/clevyr/php:5.6-composer1
+          - php_version: "5.6"
             composer_version: "2"
+            target: "onbuild"
             extra_tags: |
               clevyr/php:5
+              clevyr/php:5-composer2
               clevyr/php:5.6
+              clevyr/php:5.6-composer2
               ghcr.io/clevyr/php:5
+              ghcr.io/clevyr/php:5-composer2
               ghcr.io/clevyr/php:5.6
+              ghcr.io/clevyr/php:5.6-composer2
+
+          - php_version: "7.2"
+            composer_version: "1"
+            target: "onbuild"
+            extra_tags: |
+              clevyr/php:7.2-composer1
+              ghcr.io/clevyr/php:7.2-composer1
           - php_version: "7.2"
             composer_version: "2"
+            target: "onbuild"
             extra_tags: |
               clevyr/php:7.2
+              clevyr/php:7.2-composer2
               ghcr.io/clevyr/php:7.2
+              ghcr.io/clevyr/php:7.2-composer2
+
+          - php_version: "7.3"
+            composer_version: "1"
+            target: "onbuild"
+            extra_tags: |
+              clevyr/php:7.3-composer1
+              ghcr.io/clevyr/php:7.3-composer1
           - php_version: "7.3"
             composer_version: "2"
+            target: "onbuild"
             extra_tags: |
               clevyr/php:7.3
+              clevyr/php:7.3-composer2
               ghcr.io/clevyr/php:7.3
+              ghcr.io/clevyr/php:7.3-composer2
+
+          - php_version: "7.4"
+            composer_version: "1"
+            target: "onbuild"
+            extra_tags: |
+              clevyr/php:7-composer1
+              clevyr/php:7.4-composer1
+              ghcr.io/clevyr/php:7-composer1
+              ghcr.io/clevyr/php:7.4-composer1
           - php_version: "7.4"
             composer_version: "2"
+            target: "onbuild"
             extra_tags: |
               clevyr/php:7
+              clevyr/php:7-composer2
               clevyr/php:7.4
+              clevyr/php:7.4-composer2
               ghcr.io/clevyr/php:7
+              ghcr.io/clevyr/php:7-composer2
               ghcr.io/clevyr/php:7.4
+              ghcr.io/clevyr/php:7.4-composer2
+
+          - php_version: "8.0"
+            composer_version: "1"
+            target: "onbuild"
+            extra_tags: |
+              clevyr/php:8.0-composer1
+              ghcr.io/clevyr/php:8.0-composer1
           - php_version: "8.0"
             composer_version: "2"
+            target: "onbuild"
             extra_tags: |
               clevyr/php:8.0
+              clevyr/php:8.0-composer2
               ghcr.io/clevyr/php:8.0
+              ghcr.io/clevyr/php:8.0-composer2
+
+          - php_version: "8.1"
+            composer_version: "1"
+            target: "onbuild"
+            extra_tags: |
+              clevyr/php:8-composer1
+              clevyr/php:8.1-composer1
+              ghcr.io/clevyr/php:8.1-composer1
           - php_version: "8.1"
             composer_version: "2"
+            target: "onbuild"
             extra_tags: |
               clevyr/php:8
+              clevyr/php:8-composer2
               clevyr/php:8.1
+              clevyr/php:8.1-composer2
               clevyr/php:latest
               ghcr.io/clevyr/php:8.1
+              ghcr.io/clevyr/php:8.1-composer2
               ghcr.io/clevyr/php:latest
     steps:
       - name: Set up QEMU
@@ -77,8 +147,9 @@ jobs:
         uses: actions/cache@v2
         with:
           path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ matrix.php_version }}-${{ matrix.composer_version }}-${{ github.sha }}
+          key: ${{ runner.os }}-buildx-${{ matrix.php_version }}-${{ matrix.composer_version }}-${{ matrix.target }}-${{ github.sha }}
           restore-keys: |
+            ${{ runner.os }}-buildx-${{ matrix.php_version }}-${{ matrix.composer_version }}-${{ matrix.target }}-
             ${{ runner.os }}-buildx-${{ matrix.php_version }}-${{ matrix.composer_version }}-
             ${{ runner.os }}-buildx-${{ matrix.php_version }}-
             ${{ runner.os }}-buildx-
@@ -91,11 +162,12 @@ jobs:
           push: true
           platforms: ${{ matrix.platforms }}
           tags: |
-            ghcr.io/clevyr/php:${{ matrix.php_version }}-composer${{ matrix.composer_version }}
-            clevyr/php:${{ matrix.php_version }}-composer${{ matrix.composer_version }}
+            ghcr.io/clevyr/php:${{ matrix.php_version }}-composer${{ matrix.composer_version }}-${{ matrix.target }}
+            clevyr/php:${{ matrix.php_version }}-composer${{ matrix.composer_version }}-${{ matrix.target }}
             ${{ matrix.extra_tags }}
           build-args: |
             PHP_VERSION=${{ matrix.php_version }}
+          target: ${{ matrix.target }}
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,mode=max,dest=/tmp/.buildx-cache-new
 

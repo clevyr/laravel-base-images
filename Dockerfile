@@ -4,7 +4,7 @@ ARG ALPINE_VERSION
 
 FROM composer:$COMPOSER_VERSION as local-composer
 
-FROM php:$PHP_VERSION-fpm-alpine$ALPINE_VERSION
+FROM php:$PHP_VERSION-fpm-alpine$ALPINE_VERSION as base
 
 ENV LC_ALL=C
 
@@ -68,6 +68,8 @@ ENV XDEBUG_MODE="debug"
 ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9000 start_with_request=trigger log_level=0"
 
 CMD ["s6-svscan", "/etc/services.d"]
+
+FROM base as onbuild
 
 ONBUILD ARG PHP_FPM_PM_MAX_CHILDREN
 ONBUILD ENV PHP_FPM_PM_MAX_CHILDREN=${PHP_FPM_PM_MAX_CHILDREN:-20}
