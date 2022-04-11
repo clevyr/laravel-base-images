@@ -120,6 +120,8 @@ jobs:
               clevyr/php:8.1
               clevyr/php:8.1-composer2
               clevyr/php:latest
+              ghcr.io/clevyr/php:8
+              ghcr.io/clevyr/php:8-composer2
               ghcr.io/clevyr/php:8.1
               ghcr.io/clevyr/php:8.1-composer2
               ghcr.io/clevyr/php:latest
