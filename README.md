@@ -6,8 +6,16 @@ An enhanced version of the default [PHP Docker image](https://hub.docker.com/_/p
 
 ## Pull Command
 
+The following command will retrieve an image with PHP 8.1 and Composer v2:
+
 ```sh
-docker pull ghcr.io/clevyr/php:<PHP version>
+docker pull ghcr.io/clevyr/php:8.1
+```
+
+Alternative tags exist with Composer v1. If your application still requires Composer v1, you may add the version to the end of the tag:
+
+```sh
+docker pull ghcr.io/clevyr/php:8.1-composer1
 ```
 
 ## Runtime Configuration
@@ -43,7 +51,6 @@ The following variables can be only be configured at build.
 
 | Build Arg          | Description                                                                                                                                         |
 |--------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------|
-| `COMPOSER_VERSION` | The Composer version to alias. Each version is always available as `composer1` and `composer2`, but this will symlink the alias for `composer`      |
 | `INSTALL`          | PHP extensions to install. See [here](https://github.com/mlocati/docker-php-extension-installer#supported-php-extensions) for available extensions. |
 | `DEPS`             | `apk` dependencies to install during the build.                                                                                                     |
 

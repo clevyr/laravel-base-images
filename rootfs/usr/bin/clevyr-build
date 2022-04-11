@@ -6,17 +6,6 @@ log() {
     printf '%s: %s\n' "$(basename "$0")" "$@" >&2
 }
 
-case "${COMPOSER_VERSION:=2}" in
-    1|2)
-        printf 'Using Composer v%s\n' "$COMPOSER_VERSION"
-        ln -sf "composer$COMPOSER_VERSION" /usr/bin/composer
-        ;;
-    *)
-        printf 'Invalid COMPOSER_VERSION. Expected 1 or 2, got %s\n' "$COMPOSER_VERSION"
-        exit 1
-        ;;
-esac
-
 # Convert old dependency args to new format with defaults
 if [ "$INSTALL_BCMATH" != "false" ]; then
     unset INSTALL_BCMATH

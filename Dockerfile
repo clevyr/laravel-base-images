@@ -1,5 +1,9 @@
 ARG PHP_VERSION=8.1
+ARG COMPOSER_VERSION=2
 ARG ALPINE_VERSION
+
+FROM composer:$COMPOSER_VERSION as local-composer
+
 FROM php:$PHP_VERSION-fpm-alpine$ALPINE_VERSION
 
 ENV LC_ALL=C
@@ -51,9 +55,7 @@ RUN set -x \
         && sed -i 's|/etc/nginx/http.d|/etc/nginx/conf.d|g' /etc/nginx/nginx.conf \
     ; fi
 
-COPY --from=composer:1 /usr/bin/composer /usr/bin/composer1
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer2
-RUN ln -s composer2 /usr/bin/composer
+COPY --from=local-composer /usr/bin/composer /usr/bin/composer
 ARG COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_MEMORY_LIMIT=$COMPOSER_MEMORY_LIMIT
 
