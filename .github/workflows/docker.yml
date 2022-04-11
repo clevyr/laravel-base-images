@@ -18,86 +18,31 @@ jobs:
         platforms: ["linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64/v8"]
         include:
           - php_version: "5.6"
-            composer_version: "1"
+            composer_version: "2"
             target: "onbuild"
-            tags: |
-              5-composer1
-              5.6-composer1
+            latest_major: "true"
           - php_version: "5.6"
-            composer_version: "2"
-            target: "onbuild"
-            extra_tags: |
-              5
-              5-composer2
-              5.6
-              5.6-composer2
-
-          - php_version: "7.2"
             composer_version: "1"
             target: "onbuild"
-            extra_tags: |
-              7.2-composer1
-          - php_version: "7.2"
+            latest_major: "true"
+
+          - php_version: "7.4"
             composer_version: "2"
             target: "onbuild"
-            extra_tags: |
-              7.2
-              7.2-composer2
-
-          - php_version: "7.3"
-            composer_version: "1"
-            target: "onbuild"
-            extra_tags: |
-              7.3-composer1
-          - php_version: "7.3"
-            composer_version: "2"
-            target: "onbuild"
-            extra_tags: |
-              7.3
-              7.3-composer2
-
+            latest_major: "true"
           - php_version: "7.4"
             composer_version: "1"
             target: "onbuild"
-            extra_tags: |
-              7-composer1
-              7.4-composer1
-          - php_version: "7.4"
-            composer_version: "2"
-            target: "onbuild"
-            extra_tags: |
-              7
-              7-composer2
-              7.4
-              7.4-composer2
-
-          - php_version: "8.0"
-            composer_version: "1"
-            target: "onbuild"
-            extra_tags: |
-              8.0-composer1
-          - php_version: "8.0"
-            composer_version: "2"
-            target: "onbuild"
-            extra_tags: |
-              8.0
-              8.0-composer2
+            latest_major: "true"
 
           - php_version: "8.1"
             composer_version: "1"
             target: "onbuild"
-            extra_tags: |
-              8-composer1
-              8.1-composer1
+            latest_major: "true"
           - php_version: "8.1"
             composer_version: "2"
             target: "onbuild"
-            extra_tags: |
-              8
-              8-composer2
-              8.1
-              8.1-composer2
-              latest
+            latest: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -109,8 +54,25 @@ jobs:
           images: |
             clevyr/php
             ghcr.io/clevyr/php
+          flavor: latest=false
           tags: |
-            ${{ matrix.php_version }}-composer${{ matrix.composer_version }}-${{ matrix.target }}
+            # latest
+            type=raw,enable=${{ matrix.latest == 'true' }},value=latest
+            # {{major}}.{{minor}}-composer{{major}}-target
+            type=semver,pattern={{major}}.{{minor}},suffix=-composer${{ matrix.composer_version }}-${{ matrix.target }},value=${{ matrix.php_version }}.0
+            # {{major}}.{{minor}}-composer{{major}}
+            type=semver,enable=${{ matrix.target == 'onbuild' }},pattern={{major}}.{{minor}},suffix=-composer${{ matrix.composer_version }},value=${{ matrix.php_version }}.0
+            # {{major}}.{{minor}}-target
+            type=semver,enable=${{ matrix.composer_version == '2' }},pattern={{major}}.{{minor}},suffix=-${{ matrix.target }},value=${{ matrix.php_version }}.0
+            # {{major}}.{{minor}}
+            type=semver,enable=${{ matrix.target == 'onbuild' && matrix.composer_version == '2' }},pattern={{major}}.{{minor}},value=${{ matrix.php_version }}.0
+            # {{major}}-composer{{major}}
+            type=semver,enable=${{ matrix.target == 'onbuild' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},suffix=-composer${{ matrix.composer_version }},value=${{ matrix.php_version }}.0
+            # {{major}}-target
+            type=semver,enable=${{ matrix.composer_version == '2' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},suffix=-${{ matrix.target }},value=${{ matrix.php_version }}.0
+            # {{major}}
+            type=semver,enable=${{ matrix.target == 'onbuild' && matrix.composer_version == '2' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},value=${{ matrix.php_version }}.0
+            # extra matrix tags
             ${{ matrix.extra_tags }}
 
       - name: Set up QEMU
