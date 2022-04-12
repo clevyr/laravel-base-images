@@ -116,6 +116,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
+            COMPOSER_VERSION=${{ matrix.composer_version }}
             PHP_VERSION=${{ matrix.php_version }}
           target: ${{ matrix.target }}
           cache-from: type=local,src=/tmp/.buildx-cache
