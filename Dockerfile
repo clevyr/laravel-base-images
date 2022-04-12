@@ -55,11 +55,16 @@ RUN set -x \
         && sed -i 's|/etc/nginx/http.d|/etc/nginx/conf.d|g' /etc/nginx/nginx.conf \
     ; fi
 
-COPY --from=local-composer /usr/bin/composer /usr/bin/composer
 ARG COMPOSER_MEMORY_LIMIT=-1
 ENV COMPOSER_MEMORY_LIMIT=$COMPOSER_MEMORY_LIMIT
 
-COPY --from=clevyr/prestissimo /tmp /root/.composer
+ARG COMPOSER_VERSION
+COPY --from=local-composer /usr/bin/composer /usr/bin/composer
+RUN if [ "$COMPOSER_VERSION" = "1" ]; then \
+        composer global require hirak/prestissimo \
+        && composer clear-cache \
+    ; fi
+
 COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
 
 COPY rootfs/ /
