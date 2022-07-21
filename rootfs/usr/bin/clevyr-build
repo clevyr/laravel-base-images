@@ -32,9 +32,17 @@ if [ "$INSTALL_SQLSRV" = "true" ]; then
     export INSTALL="$INSTALL sqlsrv pdo_sqlsrv"
 fi
 
+# Add workaround for xdebug alpha release
+if [ "$INSTALL_XDEBUG" == "true" ]
+then
+    unset INSTALL_XDEBUG
+    export INSTALL_XDEBUG_STABLE=true
+fi
+
 # Add old dependency args to new variable
+
 INSTALL=( $INSTALL "$@" )
-INSTALL+=( $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | tr '[:upper:]' '[:lower:]') )
+INSTALL+=( $(env | grep '^INSTALL_.*=true$' | cut -d= -f1 | cut -d_ -f2- | tr '[:upper:]' '[:lower:]' | tr '_' '-') )
 
 DEPS=( $DEPS )
 UNTRUSTED_DEPS=( $UNTRUSTED_DEPS )
