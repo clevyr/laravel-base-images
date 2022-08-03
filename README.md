@@ -75,6 +75,7 @@ These are the legacy build args. They will still be supported for the forseeable
 | `INSTALL_GD`        | `true`    |
 | `INSTALL_IMAGICK`   | `false`   |
 | `INSTALL_INTL`      | `false`   |
+| `INSTALL_PCNTL`     | `false`   |
 | `INSTALL_MOSQUITTO` | `false`   |
 | `INSTALL_MYSQL`     | `false`   |
 | `INSTALL_PGSQL`     | `true`    |
