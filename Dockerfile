@@ -55,7 +55,7 @@ RUN set -x \
         && sed -i 's|/etc/nginx/http.d|/etc/nginx/conf.d|g' /etc/nginx/nginx.conf \
     ; fi
 
-ARG PHP_FPM_PM_MAX_CHILDREN=20
+ARG PHP_FPM_PM_MAX_CHILDREN=80
 ENV PHP_FPM_PM_MAX_CHILDREN=$PHP_FPM_PM_MAX_CHILDREN
 ARG PHP_FPM_PM_START_SERVERS=2
 ENV PHP_FPM_PM_START_SERVERS=$PHP_FPM_PM_START_SERVERS
