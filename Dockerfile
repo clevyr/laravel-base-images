@@ -49,7 +49,10 @@ RUN set -x \
         /etc/nginx/nginx.conf \
     && if [ -d /etc/nginx/http.d ]; then \
         mv /etc/nginx/http.d /etc/nginx/conf.d \
-        && sed -i 's|/etc/nginx/http.d|/etc/nginx/conf.d|g' /etc/nginx/nginx.conf \
+        && sed -ri \
+            -e 's|/etc/nginx/http.d|/etc/nginx/conf.d|' \
+            -e 's|^include /etc/nginx/conf.d/\*.conf;||' \
+            /etc/nginx/nginx.conf \
     ; fi
 
 ARG PHP_FPM_PM_MAX_CHILDREN=80
