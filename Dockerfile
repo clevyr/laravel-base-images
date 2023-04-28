@@ -47,9 +47,6 @@ RUN set -x \
     && sed -ri \
         -e 's/#(tcp_nopush on;)/\1/' \
         /etc/nginx/nginx.conf \
-    && sed -ri \
-        -e '$ s/(})/    application\/wasm wasm;\n\1/' \
-        /etc/nginx/mime.types \
     && if [ -d /etc/nginx/http.d ]; then \
         mv /etc/nginx/http.d /etc/nginx/conf.d \
         && sed -i 's|/etc/nginx/http.d|/etc/nginx/conf.d|g' /etc/nginx/nginx.conf \
