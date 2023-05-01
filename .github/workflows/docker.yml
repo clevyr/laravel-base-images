@@ -85,7 +85,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
       - name: Build
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           pull: true
@@ -106,7 +106,7 @@ jobs:
         run: docker run --rm -i "$TEST_TAG" which composer install-php-extensions clevyr-build
 
       - name: Build and Push
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           push: ${{ github.ref == 'refs/heads/main' }}
