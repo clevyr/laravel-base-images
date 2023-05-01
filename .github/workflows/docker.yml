@@ -2,6 +2,9 @@ name: Docker Build
 
 on: push
 
+env:
+  TEST_TAG: ${{ github.repository }}:test
+
 jobs:
   build:
     name: Build ${{ matrix.php_version }}-composer${{ matrix.composer_version }}-${{ matrix.target }}
@@ -81,12 +84,31 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and Push
-        id: docker_build
+      - name: Build
         uses: docker/build-push-action@v3
         with:
           context: .
           pull: true
+          load: true
+          tags: ${{ env.TEST_TAG }}
+          build-args: |
+            COMPOSER_VERSION=${{ matrix.composer_version }}
+            PHP_VERSION=${{ matrix.php_version }}
+          target: ${{ matrix.target }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Test nginx config
+        run: docker run --rm -i "$TEST_TAG" nginx -t
+      - name: Test php-fpm config
+        run: docker run --rm -i "$TEST_TAG" php-fpm -tt
+      - name: Test commands exist
+        run: docker run --rm -i "$TEST_TAG" which composer install-php-extensions clevyr-build
+
+      - name: Build and Push
+        uses: docker/build-push-action@v3
+        with:
+          context: .
           push: ${{ github.ref == 'refs/heads/main' }}
           platforms: ${{ matrix.platforms }}
           tags: ${{ steps.meta.outputs.tags }}
