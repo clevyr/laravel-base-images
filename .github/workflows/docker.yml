@@ -91,12 +91,12 @@ jobs:
           pull: true
           load: true
           tags: ${{ env.TEST_TAG }}
+          labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             COMPOSER_VERSION=${{ matrix.composer_version }}
             PHP_VERSION=${{ matrix.php_version }}
           target: ${{ matrix.target }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Test nginx config
         run: docker run --rm -i "$TEST_TAG" nginx -t
@@ -117,5 +117,4 @@ jobs:
             COMPOSER_VERSION=${{ matrix.composer_version }}
             PHP_VERSION=${{ matrix.php_version }}
           target: ${{ matrix.target }}
-          cache-from: type=gha
           cache-to: type=gha,mode=max
