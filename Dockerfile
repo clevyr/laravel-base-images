@@ -89,7 +89,7 @@ RUN if [ "$COMPOSER_VERSION" = "1" ]; then \
         && composer clear-cache \
     ; fi
 
-COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+COPY --from=mlocati/php-extension-installer:2.1.37 /usr/bin/install-php-extensions /usr/bin/
 
 COPY rootfs/ /
 
