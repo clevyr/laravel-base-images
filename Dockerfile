@@ -89,7 +89,7 @@ RUN if [ "$COMPOSER_VERSION" = "1" ]; then \
         && composer clear-cache \
     ; fi
 
-COPY --from=mlocati/php-extension-installer:2.1.37 /usr/bin/install-php-extensions /usr/bin/
+COPY --from=mlocati/php-extension-installer:2.1.42 /usr/bin/install-php-extensions /usr/bin/
 COPY --from=ghcr.io/roadrunner-server/roadrunner:2023.2.1 /usr/bin/rr /usr/local/bin/rr
 
 COPY rootfs/ /
