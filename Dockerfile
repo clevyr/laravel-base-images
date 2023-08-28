@@ -94,9 +94,6 @@ COPY --from=ghcr.io/roadrunner-server/roadrunner:2023.2.2 /usr/bin/rr /usr/local
 
 COPY rootfs/ /
 
-ENV XDEBUG_MODE="debug"
-ENV XDEBUG_CONFIG="client_host=host.docker.internal client_port=9000 start_with_request=trigger log_level=0"
-
 CMD ["s6-svscan", "/etc/services.d"]
 
 FROM base as onbuild
