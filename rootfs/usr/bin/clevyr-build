@@ -59,21 +59,6 @@ for extension in "${INSTALL[@]}"; do
                 touch "$BUILD_TMP/pgsql"
             fi
             ;;
-        sqlsrv | pdo_sqlsrv)
-            if ! [ -d "$BUILD_TMP/sqlsrv" ]; then
-                mkdir -p "$BUILD_TMP/sqlsrv"
-
-                log 'Downloading sqlsrv dependencies: msodbc'
-                curl -sfo "$BUILD_TMP/sqlsrv/msodbc_amd64.apk" \
-                    https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/msodbcsql17_17.6.1.1-1_amd64.apk
-                UNTRUSTED_DEPS+=( "$BUILD_TMP/sqlsrv/msodbc_amd64.apk" )
-
-                log 'Downloading sqlsrv dependencies: mssql-tools'
-                curl -sfo "$BUILD_TMP/sqlsrv/mssql-tools_amd64.apk" \
-                    https://download.microsoft.com/download/e/4/e/e4e67866-dffd-428c-aac7-8d28ddafb39b/mssql-tools_17.6.1.1-1_amd64.apk
-                UNTRUSTED_DEPS+=( "$BUILD_TMP/sqlsrv/mssql-tools_amd64.apk" )
-            fi
-            ;;
     esac
 done
 
