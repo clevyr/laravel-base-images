@@ -65,13 +65,13 @@ done
 # Install untrusted permanent dependencies
 if [ "${#UNTRUSTED_DEPS[@]}" != 0 ]; then
     log "Installing UNTRUSTED_DEPS: ${UNTRUSTED_DEPS[*]}"
-    apk add --allow-untrusted "${UNTRUSTED_DEPS[@]}"
+    apk add --no-cache --allow-untrusted "${UNTRUSTED_DEPS[@]}"
 fi
 
 # Install permanent dependencies
 if [ "${#DEPS[@]}" != 0 ]; then
     log "Installing DEPS: ${DEPS[*]}"
-    apk add "${DEPS[@]}"
+    apk add --no-cache "${DEPS[@]}"
 fi
 
 # Install all php extensions
