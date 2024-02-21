@@ -9,9 +9,12 @@ FROM composer:$COMPOSER_VERSION as local-composer
 FROM php:$PHP_VERSION-fpm-alpine$ALPINE_VERSION as base
 WORKDIR /app
 
+COPY --from=mlocati/php-extension-installer:2.2.2 /usr/bin/install-php-extensions /usr/bin/
+
 RUN <<EOT
   set -eux
-  apk add --no-cache bash fcgi gettext git jq nginx s6 su-exec
+  apk add --no-cache bash fcgi gettext git jq nginx postgresql-client s6 su-exec
+  install-php-extensions bcmath calendar exif intl pcntl opcache pgsql pdo_pgsql redis zip
   cd "$PHP_INI_DIR"
   sed -ri -e 's/^(access.log)/;\1/' ../php-fpm.d/docker.conf
   sed -ri \
@@ -83,9 +86,7 @@ RUN <<EOT
   fi
 EOT
 
-COPY --from=mlocati/php-extension-installer:2.2.2 /usr/bin/install-php-extensions /usr/bin/
 COPY --from=ghcr.io/roadrunner-server/roadrunner:2023.3.11 /usr/bin/rr /usr/local/bin/rr
-
 COPY rootfs/ /
 
 CMD ["s6-svscan", "/etc/services.d"]
@@ -120,21 +121,12 @@ ONBUILD ARG SKIP_BUILD
 ONBUILD ARG DEPS
 ONBUILD ARG INSTALL
 
-ONBUILD ARG INSTALL_BCMATH
-ONBUILD ARG INSTALL_CALENDAR
-ONBUILD ARG INSTALL_EXIF
 ONBUILD ARG INSTALL_GD
 ONBUILD ARG INSTALL_IMAGICK
-ONBUILD ARG INSTALL_INTL
-ONBUILD ARG INSTALL_PCNTL
 ONBUILD ARG INSTALL_MOSQUITTO
 ONBUILD ARG INSTALL_MYSQL
-ONBUILD ARG INSTALL_OPCACHE
-ONBUILD ARG INSTALL_PGSQL
-ONBUILD ARG INSTALL_REDIS
 ONBUILD ARG INSTALL_SQLSRV
 ONBUILD ARG INSTALL_XDEBUG
-ONBUILD ARG INSTALL_ZIP
 
 ONBUILD ARG NGINX_ROOT
 ONBUILD ARG NGINX_EXPIRES

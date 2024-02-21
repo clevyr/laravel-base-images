@@ -6,25 +6,9 @@ log() {
     printf '%s: %s\n' "$(basename "$0")" "$@" >&2
 }
 
-# Convert old dependency args to new format with defaults
-if [ "$INSTALL_BCMATH" != "false" ]; then
-    unset INSTALL_BCMATH
-    export INSTALL="$INSTALL bcmath"
-fi
-
 if [ "$INSTALL_MYSQL" = "true" ]; then
     unset INSTALL_MYSQL
     export INSTALL="$INSTALL mysqli pdo_mysql"
-fi
-
-if [ "$INSTALL_OPCACHE" != "false" ]; then
-    unset INSTALL_OPCACHE
-    export INSTALL="$INSTALL opcache"
-fi
-
-if [ "$INSTALL_PGSQL" != "false" ]; then
-    unset INSTALL_PGSQL
-    export INSTALL="$INSTALL pgsql pdo_pgsql"
 fi
 
 if [ "$INSTALL_SQLSRV" = "true" ]; then
