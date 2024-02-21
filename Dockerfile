@@ -1,3 +1,5 @@
+#syntax=docker/dockerfile:1
+
 ARG PHP_VERSION
 ARG COMPOSER_VERSION
 ARG ALPINE_VERSION
@@ -10,50 +12,48 @@ ENV LC_ALL=C
 
 WORKDIR /app
 
-RUN set -x \
-    && apk add --no-cache \
-        bash \
-        fcgi \
-        gettext \
-        git \
-        jq \
-        nginx \
-        s6 \
-        su-exec \
-    && cd "$PHP_INI_DIR" \
-    && sed -ri \
-        -e 's/^(access.log)/;\1/' \
-        ../php-fpm.d/docker.conf \
-    && sed -ri \
-        -e 's/^;(ping\.path)/\1/' \
-        -e 's/^;(pm\.status_path)/\1/' \
-        -e 's/^;?(pm\.max_children).*/\1 = ${PHP_FPM_PM_MAX_CHILDREN}/' \
-        -e 's/^;?(pm\.start_servers).*/\1 = ${PHP_FPM_PM_START_SERVERS}/' \
-        -e 's/^;?(pm\.min_spare_servers).*/\1 = ${PHP_FPM_PM_MIN_SPARE_SERVERS}/' \
-        -e 's/^;?(pm\.max_spare_servers).*/\1 = ${PHP_FPM_PM_MAX_SPARE_SERVERS}/' \
-        -e 's/^;?(pm\.max_requests).*/\1 = ${PHP_FPM_PM_MAX_REQUESTS}/' \
-        ../php-fpm.d/www.conf \
-    && sed -ri \
-        -e 's/^;?(max_execution_time).*/\1 = ${PHP_MAX_EXECUTION_TIME}/' \
-        -e 's/^;?(max_input_vars).*/\1 = ${PHP_MAX_INPUT_VARS}/' \
-        -e 's/^;?(memory_limit).*/\1 = ${PHP_MEMORY_LIMIT}/' \
-        -e 's/^;?(post_max_size).*/\1 = ${PHP_POST_MAX_SIZE}/' \
-        -e 's/^;?(upload_max_filesize).*/\1 = ${PHP_UPLOAD_MAX_FILESIZE}/' \
-        -e 's/^;?(max_file_uploads).*/\1 = ${PHP_MAX_FILE_UPLOADS}/' \
-        -e 's/^;?(expose_php).*/\1 = Off/' \
-        php.ini-production \
-    && ln -s php.ini-production php.ini \
-    && mkdir -p /run/nginx \
-    && sed -ri \
-        -e 's/#(tcp_nopush on;)/\1/' \
-        /etc/nginx/nginx.conf \
-    && if [ -d /etc/nginx/http.d ]; then \
-        mv /etc/nginx/http.d /etc/nginx/conf.d \
-        && sed -ri \
-            -e 's|/etc/nginx/http.d|/etc/nginx/conf.d|' \
-            -e 's|^include /etc/nginx/conf.d/\*.conf;||' \
-            /etc/nginx/nginx.conf \
-    ; fi
+RUN <<EOT
+  set -x
+  apk add --no-cache \
+    bash \
+    fcgi \
+    gettext \
+    git \
+    jq \
+    nginx \
+    s6 \
+    su-exec
+  cd "$PHP_INI_DIR"
+  sed -ri -e 's/^(access.log)/;\1/' ../php-fpm.d/docker.conf
+  sed -ri \
+    -e 's/^;(ping\.path)/\1/' \
+    -e 's/^;(pm\.status_path)/\1/' \
+    -e 's/^;?(pm\.max_children).*/\1 = ${PHP_FPM_PM_MAX_CHILDREN}/' \
+    -e 's/^;?(pm\.start_servers).*/\1 = ${PHP_FPM_PM_START_SERVERS}/' \
+    -e 's/^;?(pm\.min_spare_servers).*/\1 = ${PHP_FPM_PM_MIN_SPARE_SERVERS}/' \
+    -e 's/^;?(pm\.max_spare_servers).*/\1 = ${PHP_FPM_PM_MAX_SPARE_SERVERS}/' \
+    -e 's/^;?(pm\.max_requests).*/\1 = ${PHP_FPM_PM_MAX_REQUESTS}/' \
+    ../php-fpm.d/www.conf
+  sed -ri \
+      -e 's/^;?(max_execution_time).*/\1 = ${PHP_MAX_EXECUTION_TIME}/' \
+      -e 's/^;?(max_input_vars).*/\1 = ${PHP_MAX_INPUT_VARS}/' \
+      -e 's/^;?(memory_limit).*/\1 = ${PHP_MEMORY_LIMIT}/' \
+      -e 's/^;?(post_max_size).*/\1 = ${PHP_POST_MAX_SIZE}/' \
+      -e 's/^;?(upload_max_filesize).*/\1 = ${PHP_UPLOAD_MAX_FILESIZE}/' \
+      -e 's/^;?(max_file_uploads).*/\1 = ${PHP_MAX_FILE_UPLOADS}/' \
+      -e 's/^;?(expose_php).*/\1 = Off/' \
+      php.ini-production
+  ln -s php.ini-production php.ini
+  mkdir -p /run/nginx
+  sed -ri -e 's/#(tcp_nopush on;)/\1/' /etc/nginx/nginx.conf
+  if [ -d /etc/nginx/http.d ]; then
+    mv /etc/nginx/http.d /etc/nginx/conf.d
+    sed -ri \
+      -e 's|/etc/nginx/http.d|/etc/nginx/conf.d|' \
+      -e 's|^include /etc/nginx/conf.d/\*.conf;||' \
+      /etc/nginx/nginx.conf
+  fi
+EOT
 
 ARG PHP_FPM_PM_MAX_CHILDREN=80
 ENV PHP_FPM_PM_MAX_CHILDREN=$PHP_FPM_PM_MAX_CHILDREN
@@ -84,10 +84,12 @@ ENV COMPOSER_MEMORY_LIMIT=$COMPOSER_MEMORY_LIMIT
 
 ARG COMPOSER_VERSION
 COPY --from=local-composer /usr/bin/composer /usr/bin/composer
-RUN if [ "$COMPOSER_VERSION" = "1" ]; then \
-        composer global require hirak/prestissimo \
-        && composer clear-cache \
-    ; fi
+RUN <<EOT
+  if [ "$COMPOSER_VERSION" = "1" ]; then
+    composer global require hirak/prestissimo
+    composer clear-cache
+  fi
+EOT
 
 COPY --from=mlocati/php-extension-installer:2.2.2 /usr/bin/install-php-extensions /usr/bin/
 COPY --from=ghcr.io/roadrunner-server/roadrunner:2023.3.11 /usr/bin/rr /usr/local/bin/rr
@@ -149,7 +151,8 @@ ONBUILD ARG COMPOSER_VERSION
 
 ONBUILD ARG IPE_GD_WITHOUTAVIF=1
 
-ONBUILD RUN \
-    if [ "$SKIP_BUILD" != "true" ]; then \
-        clevyr-build \
-    ; fi
+ONBUILD RUN <<EOT
+  if [ "$SKIP_BUILD" != "true" ]; then
+    clevyr-build
+  fi
+EOT
