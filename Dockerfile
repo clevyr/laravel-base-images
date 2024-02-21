@@ -90,7 +90,7 @@ RUN if [ "$COMPOSER_VERSION" = "1" ]; then \
     ; fi
 
 COPY --from=mlocati/php-extension-installer:2.2.2 /usr/bin/install-php-extensions /usr/bin/
-COPY --from=ghcr.io/roadrunner-server/roadrunner:2023.3.8 /usr/bin/rr /usr/local/bin/rr
+COPY --from=ghcr.io/roadrunner-server/roadrunner:2023.3.11 /usr/bin/rr /usr/local/bin/rr
 
 COPY rootfs/ /
 
