@@ -145,7 +145,7 @@ ONBUILD ARG IPE_GD_WITHOUTAVIF=1
 
 ONBUILD RUN <<EOT
   set -eux
-  if [ "$SKIP_BUILD" != "true" ]; then
+  if [ "${SKIP_BUILD:-}" != "true" ]; then
     clevyr-build
   fi
 EOT

@@ -33,10 +33,9 @@ if [ "$INSTALL_SQLSRV" = "true" ]; then
 fi
 
 # Add workaround for xdebug alpha release
-if [ "$INSTALL_XDEBUG" == "true" ]
-then
+if [ "$INSTALL_XDEBUG" == "true" ]; then
     unset INSTALL_XDEBUG
-    export INSTALL_XDEBUG_STABLE=true
+    export INSTALL="$INSTALL xdebug-stable"
 fi
 
 # Add old dependency args to new variable
