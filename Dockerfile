@@ -7,13 +7,10 @@ ARG ALPINE_VERSION
 FROM composer:$COMPOSER_VERSION as local-composer
 
 FROM php:$PHP_VERSION-fpm-alpine$ALPINE_VERSION as base
-
-ENV LC_ALL=C
-
 WORKDIR /app
 
 RUN <<EOT
-  set -x
+  set -eux
   apk add --no-cache \
     bash \
     fcgi \
@@ -55,6 +52,8 @@ RUN <<EOT
   fi
 EOT
 
+ENV LC_ALL=C
+
 ARG PHP_FPM_PM_MAX_CHILDREN=80
 ENV PHP_FPM_PM_MAX_CHILDREN=$PHP_FPM_PM_MAX_CHILDREN
 ARG PHP_FPM_PM_START_SERVERS=2
@@ -85,6 +84,7 @@ ENV COMPOSER_MEMORY_LIMIT=$COMPOSER_MEMORY_LIMIT
 ARG COMPOSER_VERSION
 COPY --from=local-composer /usr/bin/composer /usr/bin/composer
 RUN <<EOT
+  set -eux
   if [ "$COMPOSER_VERSION" = "1" ]; then
     composer global require hirak/prestissimo
     composer clear-cache
@@ -152,6 +152,7 @@ ONBUILD ARG COMPOSER_VERSION
 ONBUILD ARG IPE_GD_WITHOUTAVIF=1
 
 ONBUILD RUN <<EOT
+  set -eux
   if [ "$SKIP_BUILD" != "true" ]; then
     clevyr-build
   fi
