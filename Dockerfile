@@ -11,15 +11,7 @@ WORKDIR /app
 
 RUN <<EOT
   set -eux
-  apk add --no-cache \
-    bash \
-    fcgi \
-    gettext \
-    git \
-    jq \
-    nginx \
-    s6 \
-    su-exec
+  apk add --no-cache bash fcgi gettext git jq nginx s6 su-exec
   cd "$PHP_INI_DIR"
   sed -ri -e 's/^(access.log)/;\1/' ../php-fpm.d/docker.conf
   sed -ri \
