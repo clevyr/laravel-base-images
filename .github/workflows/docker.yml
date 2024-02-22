@@ -12,21 +12,12 @@ jobs:
     strategy:
       matrix:
         php_version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
-        composer_version: ["1", "2"]
+        composer_version: ["2"]
         platforms: ["linux/amd64,linux/arm64/v8"]
         include:
           - php_version: "7.4"
-            composer_version: "2"
-            latest_major: "true"
-          - php_version: "7.4"
-            composer_version: "1"
-            latest_major: "true"
-
-          - php_version: "8.3"
-            composer_version: "1"
             latest_major: "true"
           - php_version: "8.3"
-            composer_version: "2"
             latest: "true"
     steps:
       - name: Checkout
