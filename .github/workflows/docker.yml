@@ -7,38 +7,49 @@ env:
 
 jobs:
   build:
-    name: Build ${{ matrix.php_version }}-composer${{ matrix.composer_version }}-${{ matrix.target }}
+    name: Build ${{ matrix.php_version }}-composer${{ matrix.composer_version }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
         php_version: ["7.4", "8.0", "8.1", "8.2", "8.3"]
         composer_version: ["1", "2"]
-        target: ["base", "onbuild"]
         platforms: ["linux/amd64,linux/arm64/v8"]
         include:
           - php_version: "7.4"
             composer_version: "2"
-            target: "onbuild"
             latest_major: "true"
           - php_version: "7.4"
             composer_version: "1"
-            target: "onbuild"
             latest_major: "true"
 
           - php_version: "8.3"
             composer_version: "1"
-            target: "onbuild"
             latest_major: "true"
           - php_version: "8.3"
             composer_version: "2"
-            target: "onbuild"
             latest: "true"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Docker meta
-        id: meta
+      - name: Docker meta (base)
+        id: meta-base
+        uses: docker/metadata-action@v5
+        with:
+          images: |
+            clevyr/php
+            ghcr.io/clevyr/php
+          flavor: latest=false
+          tags: |
+            # {{major}}.{{minor}}-composer{{major}}-base
+            type=semver,pattern={{major}}.{{minor}},suffix=-composer${{ matrix.composer_version }}-base,value=${{ matrix.php_version }}.0
+            # {{major}}.{{minor}}-base
+            type=semver,enable=${{ matrix.composer_version == '2' }},pattern={{major}}.{{minor}},suffix=-base,value=${{ matrix.php_version }}.0
+            # {{major}}-base
+            type=semver,enable=${{ matrix.composer_version == '2' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},suffix=-base,value=${{ matrix.php_version }}.0
+
+      - name: Docker meta (onbuild)
+        id: meta-onbuild
         uses: docker/metadata-action@v5
         with:
           images: |
@@ -48,22 +59,20 @@ jobs:
           tags: |
             # latest
             type=raw,enable=${{ matrix.latest == 'true' }},value=latest
-            # {{major}}.{{minor}}-composer{{major}}-target
-            type=semver,pattern={{major}}.{{minor}},suffix=-composer${{ matrix.composer_version }}-${{ matrix.target }},value=${{ matrix.php_version }}.0
+            # {{major}}.{{minor}}-composer{{major}}-onbuild
+            type=semver,pattern={{major}}.{{minor}},suffix=-composer${{ matrix.composer_version }}-onbuild,value=${{ matrix.php_version }}.0
             # {{major}}.{{minor}}-composer{{major}}
-            type=semver,enable=${{ matrix.target == 'onbuild' }},pattern={{major}}.{{minor}},suffix=-composer${{ matrix.composer_version }},value=${{ matrix.php_version }}.0
-            # {{major}}.{{minor}}-target
-            type=semver,enable=${{ matrix.composer_version == '2' }},pattern={{major}}.{{minor}},suffix=-${{ matrix.target }},value=${{ matrix.php_version }}.0
+            type=semver,pattern={{major}}.{{minor}},suffix=-composer${{ matrix.composer_version }},value=${{ matrix.php_version }}.0
+            # {{major}}.{{minor}}-onbuild
+            type=semver,enable=${{ matrix.composer_version == '2' }},pattern={{major}}.{{minor}},suffix=-onbuild,value=${{ matrix.php_version }}.0
             # {{major}}.{{minor}}
-            type=semver,enable=${{ matrix.target == 'onbuild' && matrix.composer_version == '2' }},pattern={{major}}.{{minor}},value=${{ matrix.php_version }}.0
+            type=semver,enable=${{ matrix.composer_version == '2' }},pattern={{major}}.{{minor}},value=${{ matrix.php_version }}.0
             # {{major}}-composer{{major}}
-            type=semver,enable=${{ matrix.target == 'onbuild' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},suffix=-composer${{ matrix.composer_version }},value=${{ matrix.php_version }}.0
-            # {{major}}-target
-            type=semver,enable=${{ matrix.composer_version == '2' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},suffix=-${{ matrix.target }},value=${{ matrix.php_version }}.0
+            type=semver,enable=${{ (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},suffix=-composer${{ matrix.composer_version }},value=${{ matrix.php_version }}.0
+            # {{major}}-onbuild
+            type=semver,enable=${{ matrix.composer_version == '2' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},suffix=-onbuild,value=${{ matrix.php_version }}.0
             # {{major}}
-            type=semver,enable=${{ matrix.target == 'onbuild' && matrix.composer_version == '2' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},value=${{ matrix.php_version }}.0
-            # extra matrix tags
-            ${{ matrix.extra_tags }}
+            type=semver,enable=${{ matrix.composer_version == '2' && (matrix.latest_major == 'true' || matrix.latest == 'true') }},pattern={{major}},value=${{ matrix.php_version }}.0
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -91,12 +100,11 @@ jobs:
           pull: true
           load: true
           tags: ${{ env.TEST_TAG }}
-          labels: ${{ steps.meta.outputs.labels }}
           build-args: |
             COMPOSER_VERSION=${{ matrix.composer_version }}
             PHP_VERSION=${{ matrix.php_version }}
-          target: ${{ matrix.target }}
           cache-from: type=gha
+          cache-to: type=gha,mode=max
 
       - name: Test nginx config
         run: docker run --rm -i "$TEST_TAG" nginx -t
@@ -105,16 +113,32 @@ jobs:
       - name: Test commands exist
         run: docker run --rm -i "$TEST_TAG" which composer install-php-extensions clevyr-build
 
-      - name: Build and Push
+      - name: Build and Push (base)
         uses: docker/build-push-action@v5
         with:
           context: .
           push: ${{ github.ref == 'refs/heads/main' }}
           platforms: ${{ matrix.platforms }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-base.outputs.tags }}
+          labels: ${{ steps.meta-base.outputs.labels }}
           build-args: |
             COMPOSER_VERSION=${{ matrix.composer_version }}
             PHP_VERSION=${{ matrix.php_version }}
-          target: ${{ matrix.target }}
+          target: onbuild
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Build and Push (onbuild)
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: ${{ github.ref == 'refs/heads/main' }}
+          platforms: ${{ matrix.platforms }}
+          tags: ${{ steps.meta-onbuild.outputs.tags }}
+          labels: ${{ steps.meta-onbuild.outputs.labels }}
+          build-args: |
+            COMPOSER_VERSION=${{ matrix.composer_version }}
+            PHP_VERSION=${{ matrix.php_version }}
+          target: onbuild
+          cache-from: type=gha
           cache-to: type=gha,mode=max
