@@ -124,7 +124,7 @@ jobs:
           build-args: |
             COMPOSER_VERSION=${{ matrix.composer_version }}
             PHP_VERSION=${{ matrix.php_version }}
-          target: onbuild
+          target: base
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
