@@ -117,7 +117,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: ${{ github.ref_name == 'main' }}
           platforms: ${{ matrix.platforms }}
           tags: ${{ steps.meta-base.outputs.tags }}
           labels: ${{ steps.meta-base.outputs.labels }}
@@ -132,7 +132,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: ${{ github.ref == 'refs/heads/main' }}
+          push: ${{ github.ref_name == 'main' }}
           platforms: ${{ matrix.platforms }}
           tags: ${{ steps.meta-onbuild.outputs.tags }}
           labels: ${{ steps.meta-onbuild.outputs.labels }}
