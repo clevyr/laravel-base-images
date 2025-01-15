@@ -4,9 +4,9 @@ ARG PHP_VERSION
 ARG COMPOSER_VERSION
 ARG ALPINE_VERSION
 
-FROM composer:$COMPOSER_VERSION as local-composer
+FROM composer:$COMPOSER_VERSION AS local-composer
 
-FROM php:$PHP_VERSION-fpm-alpine$ALPINE_VERSION as base
+FROM php:$PHP_VERSION-fpm-alpine$ALPINE_VERSION AS base
 WORKDIR /app
 
 COPY --from=mlocati/php-extension-installer:2.2.19 /usr/bin/install-php-extensions /usr/bin/
@@ -91,7 +91,7 @@ COPY rootfs/ /
 
 CMD ["s6-svscan", "/etc/services.d"]
 
-FROM base as onbuild
+FROM base AS onbuild
 
 ONBUILD ARG PHP_FPM_PM_MAX_CHILDREN
 ONBUILD ENV PHP_FPM_PM_MAX_CHILDREN=${PHP_FPM_PM_MAX_CHILDREN:-20}
